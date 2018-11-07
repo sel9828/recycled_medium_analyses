@@ -111,7 +111,7 @@
     day_start <- 0          # day_start = Starting day of each round
     day_end <- 5            # day_end = Last day of each round
     mu_period_D046 <- 0:2   # mu_period_D046 = Days when Chlorella sp. D046 was in exponential pahse, to use for calculating specific growth rate
-    mu_period_diatom <- 0:3 # mu_period_diatom = Days when Staurosira sp. C323 and Navicula sp. were in exponential phase, to use for calculating specific growth rate
+    mu_period_diatom <- 0:3 # mu_period_diatom = Days when C323 and Navicula sp. were in exponential phase, to use for calculating specific growth rate
   
   # Specific growth rate 
     growth_df2 %>%
@@ -272,28 +272,144 @@
 
 #### 1. Do growth-related variables differ in fresh versus recycled medium across multiple medium reuses? ####
 
-    # Use MANOVA to determine differences between treatments with 4 dependent variables across rounds 1-4
+    # # Use MANOVA to determine differences between treatments with 4 dependent variables across rounds 1-4
+    # 
+    # # Check for colinearity of response variables
+    # pairs(MultivarGrowthData[,5:8])
+    # cor(MultivarGrowthData[MultivarGrowthData$Round != 0,5:8]) # Pearson's 
+    # 
+    # # MANOVA with error term for Replicate to account for dependency of recycled medium replicate bottles across rounds
+    # 
+    # manova.mod.D046 <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
+    #                           data = MultivarGrowthData[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0, ]) 
+    # 
+    # manova.mod.C323 <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
+    #                           data = MultivarGrowthData[MultivarGrowthData$Algae == "C323" & MultivarGrowthData$Round != 0, ]) 
+    # 
+    # manova.mod.Navi <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
+    #                           data = MultivarGrowthData[MultivarGrowthData$Algae == "Navicula" & MultivarGrowthData$Round != 0, ]) 
+    # 
+    # # Check significance of model terms
+    # summary(manova.mod.D046)
+    # summary(manova.mod.C323)
+    # summary(manova.mod.Navi)
+
+  # UPDATED METHOD - ANALYZE EACH VARIABLE SEPARATELY WITH NLME MODEL AS DONE IN QUESTION 2 #
     
-    # Check for colinearity of response variables
-    pairs(MultivarGrowthData[,5:8])
-    cor(MultivarGrowthData[MultivarGrowthData$Round != 0,5:8]) # Pearson's 
+    # C323
+    # 1. Biomass yield
+    PC_net.lme.C323 <- lme(PC_net ~ Treatment*Round,
+                           random = ~1 | Replicate,
+                           correlation = corAR1(form = ~ Round | Replicate), 
+                           data = MultivarGrowthData[MultivarGrowthData$Algae == "C323" & MultivarGrowthData$Round != 0, ],
+                           method = "REML")
+    summary(PC_net.lme.C323)
     
-    # MANOVA with error term for Replicate to account for dependency of recycled medium replicate bottles across rounds
+    # 2. Specific growth rate
+    mu.lme.C323 <- lme(mu ~ Treatment*Round,
+                           random = ~1 | Replicate,
+                           correlation = corAR1(form = ~ Round | Replicate), 
+                           data = MultivarGrowthData[MultivarGrowthData$Algae == "C323" & MultivarGrowthData$Round != 0, ],
+                           method = "REML")
+    summary(mu.lme.C323)
     
-    manova.mod.D046 <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
-                              data = MultivarGrowthData[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0, ]) 
+    # 3. Final lipid content
+    lipids.lme.C323 <- lme(AlgaeLipidsPerCell_final ~ Treatment*Round,
+                       random = ~1 | Replicate,
+                       correlation = corAR1(form = ~ Round | Replicate), 
+                       data = MultivarGrowthData[MultivarGrowthData$Algae == "C323" & MultivarGrowthData$Round != 0, ],
+                       method = "REML")
+    summary(lipids.lme.C323)
     
-    manova.mod.C323 <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
-                              data = MultivarGrowthData[MultivarGrowthData$Algae == "C323" & MultivarGrowthData$Round != 0, ]) 
+    # 4. Final Fv/Fm
+    FvFm.lme.C323 <- lme(FvFm_final ~ Treatment*Round,
+                           random = ~1 | Replicate,
+                           correlation = corAR1(form = ~ Round | Replicate), 
+                           data = MultivarGrowthData[MultivarGrowthData$Algae == "C323" & MultivarGrowthData$Round != 0, ],
+                           method = "REML")
+    summary(FvFm.lme.C323)
     
-    manova.mod.Navi <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
-                              data = MultivarGrowthData[MultivarGrowthData$Algae == "Navicula" & MultivarGrowthData$Round != 0, ]) 
+    # Navi
+    # 1. Biomass yield
+    PC_net.lme.Navi <- lme(PC_net ~ Treatment*Round,
+                           random = ~1 | Replicate,
+                           correlation = corAR1(form = ~ Round | Replicate), 
+                           data = MultivarGrowthData[MultivarGrowthData$Algae == "Navicula" & MultivarGrowthData$Round != 0, ],
+                           method = "REML")
+    summary(PC_net.lme.Navi)
+    
+    # 2. Specific growth rate
+    mu.lme.Navi <- lme(mu ~ Treatment*Round,
+                       random = ~1 | Replicate,
+                       correlation = corAR1(form = ~ Round | Replicate), 
+                       data = MultivarGrowthData[MultivarGrowthData$Algae == "Navicula" & MultivarGrowthData$Round != 0, ],
+                       method = "REML")
+    summary(mu.lme.Navi)
+    
+    # 3. Final lipid content
+    lipids.lme.Navi <- lme(AlgaeLipidsPerCell_final ~ Treatment*Round,
+                           random = ~1 | Replicate,
+                           correlation = corAR1(form = ~ Round | Replicate), 
+                           data = MultivarGrowthData[MultivarGrowthData$Algae == "Navicula" & MultivarGrowthData$Round != 0, ],
+                           method = "REML")
+    summary(lipids.lme.Navi)
+    
+    # 4. Final Fv/Fm
+    FvFm.lme.Navi <- lme(FvFm_final ~ Treatment*Round,
+                         random = ~1 | Replicate,
+                         correlation = corAR1(form = ~ Round | Replicate), 
+                         data = MultivarGrowthData[MultivarGrowthData$Algae == "Navicula" & MultivarGrowthData$Round != 0, ],
+                         method = "REML")
+    summary(FvFm.lme.Navi)
+    
+    # D046
+    # 1. Biomass yield
+    PC_net.lme.D046 <- lme(PC_net ~ Treatment*Round,
+                           random = ~1 | Replicate,
+                           correlation = corAR1(form = ~ Round | Replicate), 
+                           data = MultivarGrowthData[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0, ],
+                           method = "REML")
+    summary(PC_net.lme.D046)
+    
+    # 2. Specific growth rate
+    mu.lme.D046 <- lme(mu ~ Treatment*Round,
+                       random = ~1 | Replicate,
+                       correlation = corAR1(form = ~ Round | Replicate), 
+                       data = MultivarGrowthData[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0, ],
+                       method = "REML")
+    summary(mu.lme.D046)
+    
+    # 3. Final lipid content
+    lipids.lme.D046 <- lme(AlgaeLipidsPerCell_final ~ Treatment*Round,
+                           random = ~1 | Replicate,
+                           correlation = corAR1(form = ~ Round | Replicate), 
+                           data = MultivarGrowthData[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0, ],
+                           method = "REML")
+    summary(lipids.lme.D046)
+    
+    # 4. Final Fv/Fm
+    FvFm.lme.D046 <- lme(FvFm_final ~ Treatment*Round,
+                         random = ~1 | Replicate,
+                         correlation = corAR1(form = ~ Round | Replicate), 
+                         data = MultivarGrowthData[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0, ],
+                         method = "REML")
+    summary(FvFm.lme.D046)
+    
     
     # Check significance of model terms
-    summary(manova.mod.D046)
-    summary(manova.mod.C323)
-    summary(manova.mod.Navi)
-
+    PC_net.lme.C323.Anova <- Anova(PC_net.lme.C323)
+    PC_net.lme.Navi.Anova <- Anova(PC_net.lme.Navi)
+    PC_net.lme.D046.Anova <- Anova(PC_net.lme.D046)
+    mu.lme.C323.Anova <- Anova(mu.lme.C323)
+    mu.lme.Navi.Anova <- Anova(mu.lme.Navi)
+    mu.lme.D046.Anova <- Anova(mu.lme.D046)
+    lipids.lme.C323.Anova <- Anova(lipids.lme.C323)
+    lipids.lme.Navi.Anova <- Anova(lipids.lme.Navi)
+    lipids.lme.D046.Anova <- Anova(lipids.lme.D046)
+    FvFm.lme.C323.Anova <- Anova(FvFm.lme.C323)
+    FvFm.lme.Navi.Anova <- Anova(FvFm.lme.Navi)
+    FvFm.lme.D046.Anova <- Anova(FvFm.lme.D046)
+    
 
 #### 2.	Is DOC production rate in recycled medium different from that in fresh medium? Does DOC production rate change across multiple reuses of the medium? ####
 
@@ -503,14 +619,14 @@
       labs(y = expression("OD"["750"])) +
       scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
-      scale_y_continuous(breaks = seq(0, 0.16, 0.05), expand = expand_scale(mult = c(0.05, 0.12))) +  # Change scale depending on values
+      scale_y_continuous(breaks = seq(0, 0.16, 0.05), expand = expand_scale(mult = c(0.05, 0.12))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 1.5, y = 0.16, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + # Change algae name; Change y scale depending on values; fontface = "italic"
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
              legend.position = c(0.94,0.23),
-             axis.title.y = element_text(margin = margin(r = 15), size = 14),  # moves axis title away from axis label
+             axis.title.y = element_text(margin = margin(r = 15), size = 14),  
              axis.title.x = element_blank(),   
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
              panel.border = element_rect(color = "gray60", fil = NA),            
@@ -535,7 +651,7 @@
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
              legend.position = c(0.94,0.23),
-             axis.title.y = element_blank(),  # moves axis title away from axis label
+             axis.title.y = element_blank(),  
              axis.title.x = element_text(margin = margin(r = 35), size = 14),   
              panel.background = element_rect(fill = "white"),
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
