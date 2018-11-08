@@ -516,7 +516,7 @@
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
       scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 2), expand = expand_scale(mult = c(0.05,0.1))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 2.6, y = 4.4, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
+      annotate("text", x = 2.4, y = 4.4, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
@@ -605,11 +605,11 @@
   # D046 ####    
     D046_OD_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "D046", ], 
                            aes(x = as.numeric(DaysElapsed_mean), y = biomass_OD_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2.5) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=biomass_OD_mean - biomass_OD_sd, ymax=biomass_OD_mean + biomass_OD_sd), width= 0.4) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 0.15, 0.05), expand = expand_scale(mult = c(0.05,0.2))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       labs( y = " ") +
@@ -631,12 +631,12 @@
   # Navicula #### 
      Navicula_OD_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula", ], 
                                 aes(x = as.numeric(DaysElapsed_mean), y = biomass_OD_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2.5) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=biomass_OD_mean - biomass_OD_sd, ymax=biomass_OD_mean + biomass_OD_sd), width= 0.4) +
       labs(y = expression("OD"["750"])) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 0.16, 0.05), expand = expand_scale(mult = c(0.05, 0.12))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 1.5, y = 0.16, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -656,15 +656,15 @@
   # C323 ####  
     C323_OD_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323", ], 
                            aes(x = as.numeric(DaysElapsed_mean), y = biomass_OD_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2.5) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=biomass_OD_mean - biomass_OD_sd, ymax=biomass_OD_mean + biomass_OD_sd), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 0.2, 0.05), expand = expand_scale(mult = c(0.05,0.2))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 2.6, y = 0.2, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
+      annotate("text", x = 2.4, y = 0.2, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
@@ -701,15 +701,15 @@
   # C323 ####
   C323_bacteriaConc_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323", ], 
                                aes(x = as.numeric(DaysElapsed_mean), y = BacteriaConc_mean, color = Treatment, shape = Treatment))  +
-    geom_point(size = 2) +
+    geom_point(size = 3) +
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 0.4) +
     labs(x = "Days") +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
+    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 25, 5), expand = expand_scale(mult = c(0.1,0.2))) +  
-    annotate("text", x = 2.6, y = 23, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
+    annotate("text", x = 2.4, y = 23, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
     theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
            legend.text = element_text(size = 10),
            legend.position = c(0.07,0.55),
@@ -725,12 +725,12 @@
   # D046 ####  
   D046_bacteriaConc_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "D046", ], 
                                    aes(x = as.numeric(DaysElapsed_mean), y = BacteriaConc_mean, color = Treatment, shape = Treatment))  +
-    geom_point(size = 2) +
+    geom_point(size = 3) +
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 0.4) +
     labs(y = " ") +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
+    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 20, 5), expand = expand_scale(mult = c(0.1,0.2))) +  # Change scale depending on values
     annotate("text", x = 2.5, y = 20, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
@@ -751,12 +751,12 @@
   # Navicula ####  
   Navi_bacteriaConc_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula", ], 
                                    aes(x = as.numeric(DaysElapsed_mean), y = BacteriaConc_mean, color = Treatment, shape = Treatment))  +
-    geom_point(size = 2) +
+    geom_point(size = 3) +
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 0.4) +
     labs(y = bquote('Bacteria'~(10^6~'cells/mL'))) +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
+    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 55, 10), expand = expand_scale(mult = c(0.05,0.15))) +  # Change scale depending on values
     annotate("text", x = 1.5, y = 52, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -792,7 +792,6 @@
     grid.draw(bacteriaConc_gridplot)
     dev.off()
   
-
 #### Figure 2: Multivariate Algae Growth Parameters ####
   
   # C323 ####
@@ -946,7 +945,7 @@
                              aes(x = Round, y = FvFm_final_mean, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(FvFm_final_mean - FvFm_final_sd), ymax=(FvFm_final_mean + FvFm_final_sd)), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = 'Final Fv/Fm', x = " ") +  # Placeholder x-axis title to keep space for grid plot
+      labs(y = expression(paste("Final ", "F"["v"]*"/F"["m"])), x = " ") +  # Placeholder x-axis title to keep space for grid plot
       scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.6, by = 0.2)) +
       annotate("text", x = 0.75, y = 0.55, label = expression(paste(bold("J"))), size = 4) + 
@@ -1083,15 +1082,15 @@
   # C323 ####    
     C323_pH_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323", ],   
                            aes(x = as.numeric(DaysElapsed_mean), y = pH_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=pH_mean - pH_sd, ymax=pH_mean + pH_sd), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6,10),breaks = seq(6,10, 1), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 2.7, y = 9.7, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
+      annotate("text", x = 2.4, y = 9.7, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
@@ -1103,15 +1102,16 @@
              panel.border = element_rect(color = "gray60", fil = NA),
              axis.ticks = element_blank(),
              axis.text = element_text(size = 12)) 
-  # D046 ####  
+  
+    # D046 ####  
     D046_pH_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "D046", ],   
                            aes(x = as.numeric(DaysElapsed_mean), y = pH_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=pH_mean - pH_sd, ymax=pH_mean + pH_sd), width= 0.4) +
       labs(y = " ") +  # x axis label as space holder for space
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6, 10),breaks = seq(0, 10, 1), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 2.5, y = 9.7, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
@@ -1128,15 +1128,16 @@
              axis.ticks = element_blank(),
              axis.text.y = element_text(size = 12),
              axis.text.x = element_blank()) 
-  # Navicula ####  
+  
+    # Navicula ####  
     Navi_pH_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula", ],   
                            aes(x = as.numeric(DaysElapsed_mean), y = pH_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=pH_mean - pH_sd, ymax=pH_mean + pH_sd), width= 0.4) +
       labs(y = "pH") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6,10),breaks = seq(6, 10, 1), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 1.5, y = 9.7, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1156,7 +1157,6 @@
     
   # Combine pH plots in a grid and Save as pdf ####
   
-    
     # Convert ggplots to grobs
     D046_pH_grob <- ggplotGrob(D046_pH_plot)
     C323_pH_grob <- ggplotGrob(C323_pH_plot)
@@ -1179,15 +1179,15 @@
   # C323 ####    
     C323_DIC_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323" & !is.na(growth_df_avgs$DIC_mean), ],   
                             aes(x = as.numeric(DaysElapsed_mean), y = DIC_mean/1000, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=(DIC_mean - DIC_sd)/1000, ymax=(DIC_mean + DIC_sd)/1000), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,12),breaks = seq(0,12, 4), expand = expand_scale(mult = c(0,0))) +
-      annotate("text", x = 2.7, y = 9.7, label = expression(paste(bold("B"), italic("  S. sourniae"), " C323")), size = 5) + 
+      annotate("text", x = 2.4, y = 9.7, label = expression(paste(bold("B"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
@@ -1201,16 +1201,16 @@
              axis.text = element_text(size = 12)) 
   # Navicula ####  
     Navi_DIC_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula" & !is.na(growth_df_avgs$DIC_mean),],   
-                            aes(x = as.numeric(DaysElapsed_mean), y = DIC_mean/1000, color = Treatment))  +
-      geom_point(size = 2) +
+                            aes(x = as.numeric(DaysElapsed_mean), y = DIC_mean/1000, color = Treatment, shape = Treatment))  +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=(DIC_mean - DIC_sd)/1000, ymax=(DIC_mean + DIC_sd)/1000), width= 0.4) +
       labs(x = "Days", y = "DIC (mM)") +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=DIC_mean - DIC_sd, ymax=DIC_mean + DIC_sd), width= 0.4) +
       labs(y = "DIC (mM)") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,5),breaks = seq(0, 5, 2), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 1.5, y = 4.5, label = expression(paste( bold("A"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1250,15 +1250,15 @@
     # C323 ####    
     C323_salt_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323" & !is.na(growth_df_avgs$Salinity_mean), ],   
                            aes(x = as.numeric(DaysElapsed_mean), y = Salinity_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=Salinity_mean - Salinity_sd, ymax=Salinity_mean + Salinity_sd), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25,39),breaks = seq(25,39, 5), expand = expand_scale(mult = c(0,0))) +
-      annotate("text", x = 2.7, y = 37, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
+      annotate("text", x = 2.4, y = 37, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
@@ -1273,12 +1273,12 @@
     # D046 ####  
     D046_salt_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "D046" & !is.na(growth_df_avgs$Salinity_mean), ],   
                            aes(x = as.numeric(DaysElapsed_mean), y = Salinity_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=Salinity_mean - Salinity_sd, ymax=Salinity_mean + Salinity_sd), width= 0.4) +
       labs(y = " ") +  # x axis label as space holder for space
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25, 39),breaks = seq(25, 39, 5), expand = expand_scale(mult = c(0,0))) +
       annotate("text", x = 2.5, y = 37, label = expression(paste(bold("A"), italic("  Chlorella "), "sp. D046")), size = 5) + 
@@ -1298,12 +1298,12 @@
     # Navicula ####  
     Navi_salt_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula" & !is.na(growth_df_avgs$Salinity_mean), ],   
                            aes(x = as.numeric(DaysElapsed_mean), y = Salinity_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=Salinity_mean - Salinity_sd, ymax=Salinity_mean + Salinity_sd), width= 0.4) +
       labs(y = "Salinity (ppt)") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25,39),breaks = seq(25, 39, 5), expand = expand_scale(mult = c(0,0))) +
       annotate("text", x = 1.5, y = 37, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1345,15 +1345,15 @@
     # C323 ####    
     C323_filtrateOD_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323" & !is.na(growth_df_avgs$OD750_filt_mean), ],   
                              aes(x = as.numeric(DaysElapsed_mean), y = OD750_filt_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=OD750_filt_mean - OD750_filt_sd, ymax=OD750_filt_mean + OD750_filt_sd), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.06),breaks = seq(0, 0.06, 0.02), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 2.6, y = 0.056, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
+      annotate("text", x = 2.4, y = 0.056, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
@@ -1365,15 +1365,16 @@
              panel.border = element_rect(color = "gray60", fil = NA),
              axis.ticks = element_blank(),
              axis.text = element_text(size = 12)) 
+    
     # D046 ####  
     D046_filtrateOD_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "D046" & !is.na(growth_df_avgs$OD750_filt_mean), ],   
                              aes(x = as.numeric(DaysElapsed_mean), y = OD750_filt_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=OD750_filt_mean - OD750_filt_sd, ymax=OD750_filt_mean + OD750_filt_sd), width= 0.4) +
       labs(y = " ") +  # x axis label as space holder for space
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.06),breaks = seq(0,0.06, 0.02), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 2.5, y = 0.055, label = expression(paste(bold("A"), italic("  Chlorella "), "sp. D046")), size = 5) + 
@@ -1390,15 +1391,16 @@
              axis.ticks = element_blank(),
              axis.text.y = element_text(size = 12),
              axis.text.x = element_blank()) 
-    # Navicula ####  
+   
+     # Navicula ####  
     Navi_filtrateOD_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula" & !is.na(growth_df_avgs$OD750_filt_mean), ],   
                              aes(x = as.numeric(DaysElapsed_mean), y = OD750_filt_mean, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=OD750_filt_mean - OD750_filt_sd, ymax=OD750_filt_mean + OD750_filt_sd), width= 0.4) +
       labs(y = expression("OD"["750"]*" of culture filtrate")) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.08),breaks = seq(0,0.08, 0.02), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 1.4, y = 0.076, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1440,15 +1442,15 @@
   # C323 ####
   C323_DOCmeas_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323" & !is.na(growth_df_avgs$DOC_mean),],   # Remove NAs
                           aes(x = as.numeric(DaysElapsed_mean), y = DOC_mean/1000, color = Treatment, shape = Treatment))  +
-    geom_point(size = 2) +
+    geom_point(size = 3) +
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 0.4) +
     labs(x = "Days") +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(limits = c(0, 0.305), breaks = seq(0,0.3, 0.1), expand = expand_scale(mult = c(0.05,0.2))) +
-    annotate("text", x = 2.6, y = 0.3, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
+    annotate("text", x = 2.4, y = 0.3, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
     theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
            legend.text = element_text(size = 10),
            legend.title = element_blank(),
@@ -1460,15 +1462,16 @@
            panel.border = element_rect(color = "gray60", fil = NA),
            axis.ticks = element_blank(),
            axis.text = element_text(size = 12)) 
-  # D046 ####
+  
+    # D046 ####
     D046_DOCmeas_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "D046" & !is.na(growth_df_avgs$DOC_mean),],   # Remove NAs
                                 aes(x = as.numeric(DaysElapsed_mean), y = DOC_mean/1000, color = Treatment, shape = Treatment))  +
-      geom_point(size = 2) +
+      geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 0.4) +
       labs(y = " ") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(breaks = seq(0, 0.7, 0.2), expand = expand_scale(mult = c(0.05,0.2))) +
       annotate("text", x = 2.6, y = 0.68, label = expression(paste( bold("A"), italic(" Chlorella"), " sp. D046")), size = 5) + 
@@ -1489,12 +1492,12 @@
   # Navicula ####
   Navi_DOCmeas_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula" & !is.na(growth_df_avgs$DOC_mean),],   # Remove NAs
                               aes(x = as.numeric(DaysElapsed_mean), y = DOC_mean/1000, color = Treatment, shape = Treatment))  +
-    geom_point(size = 2) +
+    geom_point(size = 3) +
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 0.4) +
     labs(x = "Days", y = "Biologically-derived DOC (mM)") +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 2.2, 0.5), expand = expand_scale(mult = c(0.05,0.2))) +
     annotate("text", x = 1.4, y = 2.1, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1685,15 +1688,15 @@
       # C323 ####    
       C323_DOCrate_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323" & !is.na(growth_df_avgs$DOC_rate_mean), ],   
                               aes(x = as.numeric(DaysElapsed_mean), y = DOC_rate_mean/1000, color = Treatment, shape = Treatment))  +
-        geom_point(size = 2) +
+        geom_point(size = 3) +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(DOC_rate_mean - DOC_rate_sd)/1000, ymax=(DOC_rate_mean + DOC_rate_sd)/1000), width= 0.4) +
         labs(x = "Days") +
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(-0.02,2), breaks = seq(0, 2, 0.5), expand = expand_scale(mult = c(0.05,0))) +
-        annotate("text", x = 2.6, y = 1.7, label = expression(paste(bold("B"), italic("  S. sourniae"), " C323")), size = 5) + 
+        annotate("text", x = 2.4, y = 1.7, label = expression(paste(bold("B"), italic("  S. sourniae"), " C323")), size = 5) + 
         theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
@@ -1709,13 +1712,13 @@
       # Navicula ####  
       Navi_DOCrate_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula" & !is.na(growth_df_avgs$DIC_mean),],   
                               aes(x = as.numeric(DaysElapsed_mean), y = DOC_rate_mean/1000, color = Treatment, shape = Treatment))  +
-        geom_point(size = 2) +
+        geom_point(size = 3) +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(DOC_rate_mean - DOC_rate_sd)/1000, ymax=(DOC_rate_mean + DOC_rate_sd)/1000), width= 0.4) +
         labs(y = "DOC Release Rate (mM/day)") +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(0,7),breaks = seq(0, 7, 2), expand = expand_scale(mult = c(0.1,0.1))) +
         annotate("text", x = 1.5, y = 6.5, label = expression(paste( bold("A"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1755,15 +1758,15 @@
       # C323 ####    
       C323_DOCratepercent_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323" & !is.na(growth_df_avgs$fraction_DOC_rate_mean), ],   
                                   aes(x = as.numeric(DaysElapsed_mean), y = fraction_DOC_rate_mean*100, color = Treatment, shape = Treatment))  +
-        geom_point(size = 2) +
+        geom_point(size = 3) +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(fraction_DOC_rate_mean - fraction_DOC_rate_sd)*100, ymax=(fraction_DOC_rate_mean + fraction_DOC_rate_sd)*100), width= 0.4) +
         labs(x = "Days") +
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(-50,60), breaks = seq(-50, 60, 25), expand = expand_scale(mult = c(0.1,0.1))) +
-        annotate("text", x = 3.1, y = 54, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
+        annotate("text", x = 2.7, y = 54, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
         theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
@@ -1774,16 +1777,17 @@
                panel.border = element_rect(color = "gray60", fil = NA),
                axis.ticks = element_blank(),
                axis.text = element_text(size = 12)) 
+      
       # Navicula ####  
       Navi_DOCratepercent_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula" & !is.na(growth_df_avgs$fraction_DOC_rate_mean),],   
                                   aes(x = as.numeric(DaysElapsed_mean), y = fraction_DOC_rate_mean*100, color = Treatment, shape = Treatment))  +
-        geom_point(size = 2) +
+        geom_point(size = 3) +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(fraction_DOC_rate_mean - fraction_DOC_rate_sd)*100, ymax=(fraction_DOC_rate_mean + fraction_DOC_rate_sd)*100), width= 0.4) +
         labs(y = "DOC Release Rate (% of TOC)") +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(0,90),breaks = seq(0, 90, 20), expand = expand_scale(mult = c(0,0.1))) +
         annotate("text", x = 1.6, y = 84, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1802,12 +1806,12 @@
       # D046 ####
       D046_DOCratepercent_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "D046" & !is.na(growth_df_avgs$fraction_DOC_rate_mean), ],   
                                aes(x = as.numeric(DaysElapsed_mean), y = fraction_DOC_rate_mean*100, color = Treatment, shape = Treatment))  +
-        geom_point(size = 2) +
+        geom_point(size = 3) +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(fraction_DOC_rate_mean - fraction_DOC_rate_sd)*100, ymax=(fraction_DOC_rate_mean + fraction_DOC_rate_sd)*100), width= 0.4) +
         labs(y = " ") +  # x axis label as space holder for space
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(0, 43),breaks = seq(0, 43, 10), expand = expand_scale(mult = c(0.05,0.2))) +
         annotate("text", x = 2.5, y = 42, label = expression(paste(bold("A"), italic(" Chlorella "),"sp. D046")), size = 5) + 
@@ -1872,7 +1876,8 @@
                axis.title.x = element_text(margin = margin(r = 22),size = 10),
                axis.title.y = element_blank(),
                axis.text = element_text(size = 10))   
-      # Empty plot ####
+     
+       # Empty plot ####
       empty_plot <- ggplot(data.frame()) +
         labs(x = " ") +
         theme(panel.background = element_rect(fill = NA))
@@ -1947,6 +1952,7 @@
                axis.ticks.x = element_blank(),
                axis.title = element_text(margin = margin(r = 15),size = 10),
                axis.text = element_text(size = 10))
+      
       # Released DOC ####
       cumDOC_plot_Navicula <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "Navicula", ], 
                                      aes(x = Round, y = DOC_cumulative_mean, fill = Treatment))  +
@@ -1964,6 +1970,7 @@
                axis.ticks.x = element_blank(),
                axis.title = element_text(margin = margin(r = 15),size = 10),
                axis.text = element_text(size = 10))
+      
       # Combine net and cumulative DOC plots in grid and save as pdf ####
       
       # Convert ggplots to grobs
@@ -1994,12 +2001,12 @@
         # Bacteria over time in filtrate ####
         bacteriafiltrate_D046_plot <- ggplot(data = filtrate_df_avgs[filtrate_df_avgs$Algae == 'D046', ], 
                                          aes(x = ElapsedDays, y = BacteriaConc_mean, color = Treatment, shape = Treatment))  +
-          geom_point(size = 2) +
+          geom_point(size = 2.5) +
           geom_line(size = 1) +
           geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 10) +
           labs(y = bquote('Bacteria'~(10^6~'cells/mL')), x = " ") +
-          scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-          scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) + 
+          scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+          scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
           scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260)) +
           scale_y_continuous(limits = c(0,8), expand = expand_scale(mult = c(0,0.05))) +
           annotate("text", x = 10, y = 7.8, label = expression(paste(bold("D"))), size = 4.5) + 
@@ -2014,11 +2021,11 @@
         # DOC over time in filtrate ####
             filtrateDOC_plot_D046 <- ggplot(data = filtrate_df_avgs[filtrate_df_avgs$Algae == "D046", ], 
                                             aes(x = as.numeric(ElapsedDays), y = DOC_mean/1000, color = Treatment, shape = Treatment))  +
-              geom_point(size = 2) +
+              geom_point(size = 2.5) +
               geom_line(size = 1) +
               geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 10) +
-              scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-              scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+              scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+              scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
               labs(title = expression(paste(italic("Chlorella"), " sp. D046")), y = "DOC (mM)") +
               scale_y_continuous(expand = expand_scale(mult = c(0,0)), limits = c(0,1), breaks = seq(0,1, by = 0.2)) +
               scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
@@ -2041,17 +2048,16 @@
                      axis.title.x = element_blank(),                            
                      axis.text = element_text(size = 11))   
       
-      
     # C323 ####    
         # Bacteria over time in filtrate ####
           bacteriafiltrate_C323_plot <- ggplot(data = filtrate_df_avgs[filtrate_df_avgs$Algae == 'C323', ], 
                                            aes(x = ElapsedDays, y = BacteriaConc_mean, color = Treatment, shape = Treatment))  +
-            geom_point(size = 2) +
+            geom_point(size = 2.5) +
             geom_line(size = 1) +
             geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 10) +
             labs(y = bquote('Bacteria'~(10^6~'cells/mL'))) +
-            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) + 
+            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(limits = c(0,12), expand = expand_scale(mult = c(0.05,0))) +
             annotate("text", x = 10, y = 11, label = expression(paste(bold("F"))), size = 4.5) + 
@@ -2066,11 +2072,11 @@
         # DOC over time in filtrate ####
           filtrateDOC_plot_C323 <- ggplot(data = filtrate_df_avgs[filtrate_df_avgs$Algae == "C323", ], 
                                           aes(x = as.numeric(ElapsedDays), y = DOC_mean/1000, color = Treatment, shape = Treatment))  +
-            geom_point(size = 2) +
+            geom_point(size = 2.5) +
             geom_line(size = 1) +
             geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 10) +
-            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
             labs(x = "Medium Reuses", title = expression(paste(italic("  S. sourniae"), " C323")), y = "DOC (µM)") +
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(expand = expand_scale(mult = c(0,0)), limits = c(0, 0.2), breaks = seq(0,0.2, by = 0.05)) +
@@ -2096,12 +2102,12 @@
         # Bacteria over time in filtrate ####
           bacteriafiltrate_Navi_plot <- ggplot(data = filtrate_df_avgs[filtrate_df_avgs$Algae == 'Navicula', ], 
                                                aes(x = ElapsedDays, y = BacteriaConc_mean, color = Treatment, shape = Treatment))  +
-            geom_point(size = 2) +
+            geom_point(size = 2.5) +
             geom_line(size = 1) +
             geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 10) +
             labs(x = "Days") +
-            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) + 
+            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(limits = c(0,8), breaks = seq(0, 8, by = 2), expand = expand_scale(mult = c(0.05,0))) +
             annotate("text", x = 10, y = 7.5, label = expression(paste(bold("E"))), size = 4.5) + 
@@ -2117,11 +2123,11 @@
         # DOC over time in filtrate ####
           filtrateDOC_plot_Navi <- ggplot(data = filtrate_df_avgs[filtrate_df_avgs$Algae == "Navicula", ], 
                                           aes(x = as.numeric(ElapsedDays), y = DOC_mean/1000, color = Treatment, shape = Treatment))  +
-            geom_point(size = 2) +
+            geom_point(size = 2.5) +
             geom_line(size = 1) +
             geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 10) +
-            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
+            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
             labs(title = expression(paste(italic("  Navicula"), " sp."))) +
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(expand = expand_scale(mult = c(0,0)), limits = c(0, 2.5), breaks = seq(0,2.5, by = 0.5)) +
@@ -2191,7 +2197,7 @@ DOC_biomass_plot <- ggplot(data = initialDOC_PC_final,
          legend.box.background = element_rect(color = "gray70"),
          legend.key = element_rect(fill = "white"),
          legend.title = element_blank(),
-         legend.text = element_text(size = 8),
+         legend.text = element_text(size = 9),
          legend.justification = c(1,0),
          legend.position = c(0.95,0.05),
          legend.text.align = 0,
