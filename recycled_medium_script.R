@@ -69,7 +69,19 @@
       group_by(Algae, Round, Treatment, Day) %>% 
       summarize_all(funs(mean, sd), na.rm = TRUE) %>%
       replace(., is.na(.), NA)-> growth_df_avgs  
+    
+    # Find % difference in average bacteria concentrations between fresh and recycled treatments
+    
+    growth_df_avgs %>%  
+      select(Algae, Round, Treatment, Day, BacteriaConc_mean) %>% 
+      filter(Round != 0) %>% # Remove Round 0, when all treatments were in Fresh Medium
+      spread(Treatment, BacteriaConc_mean) %>%  # Converts Fresh and Recycled to individual columns, with the values in the columns being the mean bacteria concentration
+      mutate(percent_more_bacteria = 100*(R-F)/F) -> bacteria_percent_diff  # calcualtes the % increase in bacteria in Recycled treatment compared to Fresh control
 
+        # Find average percent_more_bacteria on Day 5, removing C323 Round 3
+        avg_percent_more_bacteria <- mean(bacteria_percent_diff$percent_more_bacteria[bacteria_percent_diff$Algae != "C323" & bacteria_percent_diff$Round != 3 & bacteria_percent_diff$Day == 5])
+        sd_percent_more_bacteria <- sd(bacteria_percent_diff$percent_more_bacteria[bacteria_percent_diff$Algae != "C323" & bacteria_percent_diff$Round != 3 & bacteria_percent_diff$Day == 5])
+        
 #### Fill in missing data for multivariate analyses of growth parameters ####
   
   # Create regression equations of missing data with algae cell concentration.   
@@ -179,11 +191,12 @@
     group_by(Algae, Round, Treatment, Replicate) %>% 
     summarize(PC_net = ( (uM_PC[Day == day_end] - uM_PC[Day == day_start])/1000 ),    # Same as PC_net in MultivarGrowthData; convert to mM
               DOC_net = (DOC[Day == day_end] - DOC[Day == day_start])/1000 ) %>%      # DOC_net = change in DOC concentration over the round; convert to mM
-    mutate(fraction_DOC_net = DOC_net/(PC_net + DOC_net)) %>%                         # fraction_DOC_net = DOC_net as a fraction of change in total carbon over the round (with total carbon calcualted as the sum of net_PC and net_DOC)
+    mutate(fraction_DOC_net = DOC_net/(PC_net + DOC_net)) %>%                         # fraction_DOC_net = DOC_net as a fraction of change in total carbon over the round (with total carbon calcualted as the sum of net_PC and net_DOC)                         
     full_join(carbon_cumulative_df, by = c("Algae", "Round", "Treatment", "Replicate")) -> carbon_cum_net_reps_df   # data with individual replicates still intact
     
   carbon_cum_net_reps_df %>%   
     filter(!is.na(DOC_net)) %>%      # For Chlorella sp. D046, RB R3 D5 measured DOC is missing, so remove NAs before calculating means 
+    mutate(DOC_percent_lost = 100*(DOC_cumulative - DOC_net)/DOC_cumulative) %>%   # DOC_percent_lost = percent of released (cumulative) DOC missing per round after accounting for DOC measured (net) in the growth medium
     group_by(Algae, Round, Treatment) %>% 
     select(-Replicate) %>% # Remove 'Replicate' column
     summarize_all(funs(mean, sd)) -> carbon_cumulative_net_df  # Means and standard deviations summary table for both estimated (cumulative) and measured (net) carbon production
@@ -410,6 +423,11 @@
     FvFm.lme.Navi.Anova <- Anova(FvFm.lme.Navi)
     FvFm.lme.D046.Anova <- Anova(FvFm.lme.D046)
     
+    # interaction plot for selected variables/algae
+    interaction.plot(MultivarGrowthData$Round[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0], 
+                     MultivarGrowthData$Treatment[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0],
+                     MultivarGrowthData$FvFm_final[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0])
+    
 
 #### 2.	Is DOC production rate in recycled medium different from that in fresh medium? Does DOC production rate change across multiple reuses of the medium? ####
 
@@ -521,7 +539,7 @@
       labs(y = " ") +
       scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
-      scale_y_continuous(breaks = seq(0, 10, 2), expand = expand_scale(mult = c(0.05,0.15))) +  # Change scale depending on values
+      scale_y_continuous(breaks = seq(0, 10, 2), expand = expand_scale(mult = c(0.05,0.15))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 30, 5)) +
       annotate("text", x = 2.3, y = 9, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
       annotate("text", x = c(9, 15, 21, 27), y = 9, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
@@ -549,7 +567,7 @@
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
       scale_y_continuous(breaks = seq(0, 1.2, 0.4), expand = expand_scale(mult = c(0.05,0.12))) +  # Change scale depending on values
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 1.5, y = 1.05, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + # Change algae name; Change y scale depending on values; fontface = "italic"
+      annotate("text", x = 1.5, y = 1.05, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
@@ -621,7 +639,7 @@
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
       scale_y_continuous(breaks = seq(0, 0.16, 0.05), expand = expand_scale(mult = c(0.05, 0.12))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 1.5, y = 0.16, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + # Change algae name; Change y scale depending on values; fontface = "italic"
+      annotate("text", x = 1.5, y = 0.16, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
@@ -690,7 +708,7 @@
     scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
     scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
-    scale_y_continuous(breaks = seq(0, 25, 5), expand = expand_scale(mult = c(0.1,0.2))) +  # Change scale depending on values
+    scale_y_continuous(breaks = seq(0, 25, 5), expand = expand_scale(mult = c(0.1,0.2))) +  
     annotate("text", x = 2.6, y = 23, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
     theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
            legend.text = element_text(size = 10),
@@ -1512,10 +1530,10 @@
     grid.draw(DOCmeas_gridplot)
     dev.off()
 
-#### Figure 4: Cumulative and net DOC produced per Round (Percent) ####
+#### Figure 4: Released and Accumulated DOC per Round (Percent) #### (Note: "released" = "cumulative", "accumulated" = "net")
       
    # D046 ####
-      # Net DOC ####
+      # Accumulated DOC ####
       netDOCpercent_plot_D046 <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "D046", ], 
                                  aes(x = Round, y = fraction_DOC_net_mean*100, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
@@ -1546,7 +1564,7 @@
         theme(panel.background = element_rect(fill = NA))
       
    # C323 ####
-      # Net DOC ####  
+      # Accumulated DOC ####  
       netDOCpercent_plot_C323 <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "C323", ], 
                                  aes(x = Round, y = fraction_DOC_net_mean*100, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
@@ -1571,7 +1589,7 @@
                axis.ticks.x = element_blank(),
                axis.title = element_blank(),
                axis.text = element_text(size = 10))
-      # Cumulative DOC ####  
+      # Released DOC ####  
       cumDOCpercent_plot_C323 <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "C323", ], 
                                  aes(x = Round, y = fraction_DOC_cumulative_mean*100, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
@@ -1591,12 +1609,12 @@
                axis.text = element_text(size = 10)) 
       
    # Navicula ####  
-      # Net DOC ####
+      # Accumulated DOC ####
       netDOCpercent_plot_Navicula <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "Navicula", ], 
                                      aes(x = Round, y = fraction_DOC_net_mean*100, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=(fraction_DOC_net_mean - fraction_DOC_net_sd)*100, ymax=(fraction_DOC_net_mean + fraction_DOC_net_sd)*100), width= 0.4, position = position_dodge(0.9)) +
-        labs(y = "Net DOC (% of TOC)", x = " ", title = expression(paste(italic("Navicula"), " sp."))) +
+        labs(y = "Accumulated DOC\n(% of TOC)", x = " ", title = expression(paste(italic("Navicula"), " sp."))) +
         scale_fill_manual(labels = c("Fresh", "Recycled"), 
                           values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0)), breaks = seq(0,10, by = 2)) +
@@ -1616,12 +1634,13 @@
                axis.ticks.x = element_blank(),
                axis.title = element_text(margin = margin(r = 75),size = 10),
                axis.text = element_text(size = 10))
-      # Cumulative DOC ####
+      
+    # Released DOC ####
       cumDOCpercent_plot_Navicula <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "Navicula", ], 
                                      aes(x = Round, y = fraction_DOC_cumulative_mean*100, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=(fraction_DOC_cumulative_mean - fraction_DOC_cumulative_sd)*100, ymax=(fraction_DOC_cumulative_mean + fraction_DOC_cumulative_sd)*100), width= 0.4, position = position_dodge(0.9)) +
-        labs(x = "Medium Reuses", y = "Cumulative DOC (% of TOC)") +
+        labs(x = "Medium Reuses", y = "Released DOC\n(% of TOC)") +
         scale_fill_manual(labels = c("Fresh", "Recycled"), 
                           values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0.05)), breaks = seq(0,80, by = 20)) +
@@ -1661,7 +1680,7 @@
       dev.off()    
 
 
-#### Figure S7: Absolute DOC production rates (mM C/day) over time (C323 & Navicula only) ####
+#### Figure S7: Absolute DOC release rates (mM C/day) over time (C323 & Navicula only) ####
       
       # C323 ####    
       C323_DOCrate_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "C323" & !is.na(growth_df_avgs$DOC_rate_mean), ],   
@@ -1686,6 +1705,7 @@
                panel.border = element_rect(color = "gray60", fil = NA),
                axis.ticks = element_blank(),
                axis.text = element_text(size = 12)) 
+      
       # Navicula ####  
       Navi_DOCrate_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula" & !is.na(growth_df_avgs$DIC_mean),],   
                               aes(x = as.numeric(DaysElapsed_mean), y = DOC_rate_mean/1000, color = Treatment, shape = Treatment))  +
@@ -1823,10 +1843,10 @@
       grid.draw(DOCratepercent_gridplot)
       dev.off() 
 
- #### Figure S9: Cumulative and net DOC produced per Round (Absolute values) ####
+ #### Figure S9: Released and accumulated DOC produced per Round (Absolute values) #### (Note: "released" = "cumulative", "accumulated" = "net")
       
       # D046 ####
-      # Net DOC ####
+      # Released DOC ####
       netDOC_plot_D046 <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "D046", ], 
                                  aes(x = Round, y = DOC_net_mean, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
@@ -1858,7 +1878,7 @@
         theme(panel.background = element_rect(fill = NA))
       
       # C323 ####
-      # Net DOC ####  
+      # Accumulated DOC ####  
       netDOC_plot_C323 <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "C323", ], 
                                  aes(x = Round, y = DOC_net_mean, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
@@ -1883,7 +1903,7 @@
                axis.ticks.x = element_blank(),
                axis.title = element_blank(),
                axis.text = element_text(size = 10))
-      # Cumulative DOC ####  
+      # Released DOC ####  
       cumDOC_plot_C323 <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "C323", ], 
                                  aes(x = Round, y = DOC_cumulative_mean, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
@@ -1903,12 +1923,12 @@
                axis.text = element_text(size = 10)) 
       
       # Navicula ####  
-      # Net DOC ####
+      # Accumulated DOC ####
       netDOC_plot_Navicula <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "Navicula", ], 
                                      aes(x = Round, y = DOC_net_mean, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=DOC_net_mean - DOC_net_sd, ymax=DOC_net_mean + DOC_net_sd), width= 0.4, position = position_dodge(0.9)) +
-        labs(y = "Net DOC (mM)", x = " ", title = expression(paste(italic("Navicula"), " sp."))) +
+        labs(y = "Accumulated DOC (mM)", x = " ", title = expression(paste(italic("Navicula"), " sp."))) +
         scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0)), breaks = seq(0,0.6, by = 0.2)) +
         annotate("text", x = 0.75, y = 0.58, label = expression(paste(bold("A"))), size = 5) + 
@@ -1927,12 +1947,12 @@
                axis.ticks.x = element_blank(),
                axis.title = element_text(margin = margin(r = 15),size = 10),
                axis.text = element_text(size = 10))
-      # Cumulative DOC ####
+      # Released DOC ####
       cumDOC_plot_Navicula <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "Navicula", ], 
                                      aes(x = Round, y = DOC_cumulative_mean, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=DOC_cumulative_mean - DOC_cumulative_sd, ymax=DOC_cumulative_mean + DOC_cumulative_sd), width= 0.4, position = position_dodge(0.9)) +
-        labs(x = "Medium Reuses", y = "Cumulative DOC (mM)") +
+        labs(x = "Medium Reuses", y = "Released DOC (mM)") +
         scale_fill_manual(labels = c("Fresh", "Recycled"), 
                           values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0.05)), breaks = seq(0,15, by = 5)) +
