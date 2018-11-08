@@ -241,7 +241,7 @@
     # Add the mean PC_net of Fresh replicates as a column in the original initialDOC_PC_df data frame, 
       # and calculate normalized biomass by dividing each recycled medium replicate PC_net 
       # by mean_Fresh_PCnet. Only retain rows of the recycled medium treatments. 
-      
+     
       initialDOC_PC_df %>% 
         filter(Treatment == "R") %>% 
         inner_join(initialDOC_PC_Fresh_df, by = c("Algae", "Round")) %>% 
@@ -467,7 +467,7 @@
 #### 3. Relationship between normalized biomass change and initial DOC in the recycled medium ####
 
     # Model with lme including autocorrelation, with Replicates as random effects
-    ## Without "outliers" (Staurosira sp. C323 Rounds 2 and 3) removed
+    ## Without "outliers" (C323 Rounds 2 and 3) removed
     PC.lme.outliers <- lme(PC_R_normalized ~ initial_DOC, 
                               random = ~1 | Algae/Replicate, 
                               correlation = corAR1(form = ~ Round | Algae/Replicate), 
@@ -484,7 +484,7 @@
       hist(PC.lme.resid.outliers) 
       plot(fitted(PC.lme.outliers), PC.lme.resid.outliers)
     
-    ## With "outliers" (Staurosira sp. C323 Rounds 2 and 3) removed
+    ## With "outliers" (C323 Rounds 2 and 3) removed
     PC.lme <- lme(PC_R_normalized ~ initial_DOC, 
                      random = ~1 | Algae/Replicate, 
                      correlation = corAR1(form = ~ Round | Algae/Replicate), 
@@ -516,7 +516,7 @@
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
       scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 2), expand = expand_scale(mult = c(0.05,0.1))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 2.6, y = 4.4, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+      annotate("text", x = 2.6, y = 4.4, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
@@ -664,7 +664,7 @@
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
       scale_y_continuous(breaks = seq(0, 0.2, 0.05), expand = expand_scale(mult = c(0.05,0.2))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 2.6, y = 0.2, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+      annotate("text", x = 2.6, y = 0.2, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
@@ -709,7 +709,7 @@
     scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 25, 5), expand = expand_scale(mult = c(0.1,0.2))) +  
-    annotate("text", x = 2.6, y = 23, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+    annotate("text", x = 2.6, y = 23, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
     theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
            legend.text = element_text(size = 10),
            legend.position = c(0.07,0.55),
@@ -801,7 +801,7 @@
                            aes(x = Round, y = PC_net_mean, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=PC_net_mean - PC_net_sd, ymax=PC_net_mean + PC_net_sd), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = "Algae Biomass (mM C)", title = expression(paste(italic("Staurosira"), " sp. C323"))) +
+      labs(y = "Algae Biomass (mM C)", title = expression(paste(italic("S. sourniae"), " C323"))) +
       scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.05)), breaks = seq(0,8, by = 2)) +
       annotate("text", x = 0.75, y = 8, label = expression(paste(bold("C"))), size = 4) + 
@@ -1091,7 +1091,7 @@
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6,10),breaks = seq(6,10, 1), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 2.7, y = 9.7, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+      annotate("text", x = 2.7, y = 9.7, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
@@ -1187,7 +1187,7 @@
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,12),breaks = seq(0,12, 4), expand = expand_scale(mult = c(0,0))) +
-      annotate("text", x = 2.7, y = 9.7, label = expression(paste(bold("B"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+      annotate("text", x = 2.7, y = 9.7, label = expression(paste(bold("B"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
@@ -1258,7 +1258,7 @@
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25,39),breaks = seq(25,39, 5), expand = expand_scale(mult = c(0,0))) +
-      annotate("text", x = 2.7, y = 37, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+      annotate("text", x = 2.7, y = 37, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
@@ -1353,7 +1353,7 @@
       scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.06),breaks = seq(0, 0.06, 0.02), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 2.6, y = 0.056, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+      annotate("text", x = 2.6, y = 0.056, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
@@ -1448,7 +1448,7 @@
     scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(limits = c(0, 0.305), breaks = seq(0,0.3, 0.1), expand = expand_scale(mult = c(0.05,0.2))) +
-    annotate("text", x = 2.6, y = 0.3, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+    annotate("text", x = 2.6, y = 0.3, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
     theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
            legend.text = element_text(size = 10),
            legend.title = element_blank(),
@@ -1569,7 +1569,7 @@
                                  aes(x = Round, y = fraction_DOC_net_mean*100, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=(fraction_DOC_net_mean - fraction_DOC_net_sd)*100, ymax=(fraction_DOC_net_mean + fraction_DOC_net_sd)*100), width= 0.4, position = position_dodge(0.9)) +
-        labs(title = expression(paste(italic("Staurosira"), " sp. C323"))) +
+        labs(title = expression(paste(italic("S. sourniae"), " C323"))) +
         scale_fill_manual(labels = c("Fresh", "Recycled"), 
                           values = c('gray63','gray43')) +
         scale_y_continuous(expand = expand_scale(mult = c(0.05,0)), breaks = seq(0,30, by = 10)) +
@@ -1693,7 +1693,7 @@
         scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(-0.02,2), breaks = seq(0, 2, 0.5), expand = expand_scale(mult = c(0.05,0))) +
-        annotate("text", x = 2.6, y = 1.7, label = expression(paste(bold("B"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+        annotate("text", x = 2.6, y = 1.7, label = expression(paste(bold("B"), italic("  S. sourniae"), " C323")), size = 5) + 
         theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
@@ -1763,7 +1763,7 @@
         scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(-50,60), breaks = seq(-50, 60, 25), expand = expand_scale(mult = c(0.1,0.1))) +
-        annotate("text", x = 3.1, y = 54, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+        annotate("text", x = 3.1, y = 54, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
         theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
@@ -1883,7 +1883,7 @@
                                  aes(x = Round, y = DOC_net_mean, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=DOC_net_mean - DOC_net_sd, ymax=DOC_net_mean + DOC_net_sd), width= 0.4, position = position_dodge(0.9)) +
-        labs(title = expression(paste(italic("Staurosira"), " sp. C323"))) +
+        labs(title = expression(paste(italic("S. sourniae "), " C323"))) +
         scale_fill_manual(labels = c("Fresh", "Recycled"), 
                           values = c('gray63','gray43')) +
         scale_y_continuous(expand = expand_scale(mult = c(0.05,0)), breaks = seq(0,0.3, by = 0.05)) +
@@ -2071,7 +2071,7 @@
             geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 10) +
             scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
             scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +  
-            labs(x = "Medium Reuses", title = expression(paste(italic("  Staurosira"), " sp. C323")), y = "DOC (µM)") +
+            labs(x = "Medium Reuses", title = expression(paste(italic("  S. sourniae"), " C323")), y = "DOC (µM)") +
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(expand = expand_scale(mult = c(0,0)), limits = c(0, 0.2), breaks = seq(0,0.2, by = 0.05)) +
             annotate("text", x = 10, y = 0.19, label = expression(paste(bold("C"))), size = 4.5) + 
@@ -2180,9 +2180,9 @@ DOC_biomass_plot <- ggplot(data = initialDOC_PC_final,
                            aes(x = initial_DOC, y = PC_R_normalized, color = Algae, shape = Algae))  +
   geom_point(alpha = 0.6, size = 3) +
   labs(x = "Initial DOC (µM) in Recycled Medium", y = "Normalized Biomass Yield in Recycled Medium") +
-  scale_color_manual(labels = c(expression(paste(italic("Staurosira"), " sp. C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp."))),
+  scale_color_manual(labels = c(expression(paste(italic("S. sourniae"), " C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp."))),
                      values = c('gray43','green4','dodgerblue4')) +
-  scale_shape_manual(labels = c(expression(paste(italic("Staurosira"), " sp. C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp."))), 
+  scale_shape_manual(labels = c(expression(paste(italic("S. sourniae"), " C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp."))), 
                      values = c(16, 17, 15)) +  
   geom_hline(yintercept = 1, color = "gray55", size = 0.5) +   # reference line for no effect
   xlim(0,1750) +
