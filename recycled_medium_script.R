@@ -512,8 +512,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=AlgaeConc_mean - AlgaeConc_sd, ymax=AlgaeConc_mean + AlgaeConc_sd), width= 0.4) +
       labs(x = "Days", y = bquote('Algae'~(10^6~'cells/mL'))) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 2), expand = expand_scale(mult = c(0.05,0.1))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 2.4, y = 4.4, label = expression(paste(bold("C"), italic("  S. sourniae"), " C323")), size = 5) + 
@@ -537,8 +537,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=AlgaeConc_mean - AlgaeConc_sd, ymax=AlgaeConc_mean + AlgaeConc_sd), width= 0.4) +
       labs(y = " ") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 10, 2), expand = expand_scale(mult = c(0.05,0.15))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 30, 5)) +
       annotate("text", x = 2.3, y = 9, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
@@ -563,8 +563,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=AlgaeConc_mean - AlgaeConc_sd, ymax=AlgaeConc_mean + AlgaeConc_sd), width= 0.4) +
       labs(x = "Days", y = bquote('Algae'~(10^6~'cells/mL'))) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15)) +
+      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 1.2, 0.4), expand = expand_scale(mult = c(0.05,0.12))) +  # Change scale depending on values
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 1.5, y = 1.05, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
