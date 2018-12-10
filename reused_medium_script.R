@@ -62,7 +62,7 @@
            biomass_chl = Chl - Chl_medium              # biomass_chl = Blank-corrected chlorophyll-a concentration of the culture, in relative fluorescence units.
            ) -> growth_df2    
 
-  # Calculate daily averages and standard deviations of all variables in growth data frame. For use in plotting. ###
+  # Calculate daily averages and standard deviations of all variables in growth_df2. For use in plotting. ###
 
     growth_df2 %>%
       select(-Replicate) %>% 
@@ -70,13 +70,13 @@
       summarize_all(funs(mean, sd), na.rm = TRUE) %>%
       replace(., is.na(.), NA)-> growth_df_avgs  
     
-    # Find % difference in average bacteria concentrations between fresh and recycled treatments
+    # Find % difference in average bacteria concentrations between fresh and reused treatments
     
     growth_df_avgs %>%  
       select(Algae, Round, Treatment, Day, BacteriaConc_mean) %>% 
       filter(Round != 0) %>% # Remove Round 0, when all treatments were in Fresh Medium
-      spread(Treatment, BacteriaConc_mean) %>%  # Converts Fresh and Recycled to individual columns, with the values in the columns being the mean bacteria concentration
-      mutate(percent_more_bacteria = 100*(R-F)/F) -> bacteria_percent_diff  # calcualtes the % increase in bacteria in Recycled treatment compared to Fresh control
+      spread(Treatment, BacteriaConc_mean) %>%  # Converts Fresh and Reused to individual columns, with the values in the columns being the mean bacteria concentration
+      mutate(percent_more_bacteria = 100*(R-F)/F) -> bacteria_percent_diff  # calcualtes the % increase in bacteria in Reused treatment compared to Fresh control
 
         # Find average percent_more_bacteria on Day 5, removing C323 Round 3
         avg_percent_more_bacteria <- mean(bacteria_percent_diff$percent_more_bacteria[bacteria_percent_diff$Algae != "C323" & bacteria_percent_diff$Round != 3 & bacteria_percent_diff$Day == 5])
@@ -249,7 +249,7 @@
     summarize_all(funs(mean, sd)) -> carbon_all_df  # Means and standard deviations for replicates
 
 
-#### Comparison of normalized biomass yield vs initial DOC in the recycled medium treatments ####
+#### Comparison of normalized biomass yield vs initial DOC in the reused medium treatments ####
 
   growth_df2 %>% 
     group_by(Algae, Round, Treatment, Replicate) %>% 
@@ -264,15 +264,15 @@
       summarize(mean_Fresh_PCnet = mean(PC_net)) -> initialDOC_PC_Fresh_df  #mean_Fresh_PCnet = average PC_net of Fresh medium replicates within a round
   
     # Add the mean PC_net of Fresh replicates as a column in the original initialDOC_PC_df data frame, 
-      # and calculate normalized biomass by dividing each recycled medium replicate PC_net 
-      # by mean_Fresh_PCnet. Only retain rows of the recycled medium treatments. 
+      # and calculate normalized biomass by dividing each reused medium replicate PC_net 
+      # by mean_Fresh_PCnet. Only retain rows of the reused medium treatments. 
      
       initialDOC_PC_df %>% 
         filter(Treatment == "R") %>% 
         inner_join(initialDOC_PC_Fresh_df, by = c("Algae", "Round")) %>% 
         ungroup() %>% 
         select(-Treatment.x, -Treatment.y) %>% 
-        mutate(PC_R_normalized = PC_net/mean_Fresh_PCnet)-> initialDOC_PC_final  #PC_R_normalized = PC_net of Recycled medium treatments divided by the mean PC_net of Fresh medium control replicates from the same round
+        mutate(PC_R_normalized = PC_net/mean_Fresh_PCnet)-> initialDOC_PC_final  #PC_R_normalized = PC_net of Reused medium treatments divided by the mean PC_net of Fresh medium control replicates from the same round
       
         # Check out trends in data
         plot(PC_net ~ initial_DOC, data = initialDOC_PC_final)
@@ -308,7 +308,7 @@
 
 ##### Statistics #####
 
-#### 1. Do growth-related variables differ in fresh versus recycled medium across multiple medium reuses? ####
+#### 1. Do growth-related variables differ in fresh versus reused medium across multiple medium reuses? ####
 
     # # Use MANOVA to determine differences between treatments with 4 dependent variables across rounds 1-4
     # 
@@ -316,7 +316,7 @@
     # pairs(MultivarGrowthData[,5:8])
     # cor(MultivarGrowthData[MultivarGrowthData$Round != 0,5:8]) # Pearson's 
     # 
-    # # MANOVA with error term for Replicate to account for dependency of recycled medium replicate bottles across rounds
+    # # MANOVA with error term for Replicate to account for dependency of reused medium replicate bottles across rounds
     # 
     # manova.mod.D046 <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
     #                           data = MultivarGrowthData[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0, ]) 
@@ -454,7 +454,7 @@
                      MultivarGrowthData$FvFm_final[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0])
     
 
-#### 2.	Is DOC production rate in recycled medium different from that in fresh medium? Does DOC production rate change across multiple reuses of the medium? ####
+#### 2.	Is DOC production rate in reused medium different from that in fresh medium? Does DOC production rate change across multiple reuses of the medium? ####
 
     # Use the variable fraction_DOC_cumulative since this normalizes DOC release rate by TOC production rate over the round
     # Keep Round as an integer variable using lme with Replicate bottles as a random factor
@@ -489,7 +489,7 @@
                        carbon_cumulative_df$Treatment[carbon_cumulative_df$Algae == "C323"],
                        carbon_cumulative_df$fraction_DOC_cumulative[carbon_cumulative_df$Algae == "C323"])
 
-#### 3. Relationship between normalized biomass change and initial DOC in the recycled medium ####
+#### 3. Relationship between normalized biomass change and initial DOC in the reused medium ####
 
     # Model with lme including autocorrelation, with Replicates as random effects
     ## Without "outliers" (C323 Rounds 2 and 3) removed
@@ -537,8 +537,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=AlgaeConc_mean - AlgaeConc_sd, ymax=AlgaeConc_mean + AlgaeConc_sd), width= 0.4) +
       labs(x = "Days", y = bquote('Algae'~(10^6~'cells/mL'))) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 2), expand = expand_scale(mult = c(0.05,0.1))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 2.6, y = 4.4, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -562,8 +562,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=AlgaeConc_mean - AlgaeConc_sd, ymax=AlgaeConc_mean + AlgaeConc_sd), width= 0.4) +
       labs(y = " ") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 10, 2), expand = expand_scale(mult = c(0.05,0.15))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 30, 5)) +
       annotate("text", x = 2.3, y = 9, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
@@ -588,8 +588,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=AlgaeConc_mean - AlgaeConc_sd, ymax=AlgaeConc_mean + AlgaeConc_sd), width= 0.4) +
       labs(x = "Days", y = bquote('Algae'~(10^6~'cells/mL'))) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 1.2, 0.4), expand = expand_scale(mult = c(0.05,0.12))) +  # Change scale depending on values
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 1.5, y = 1.05, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -633,8 +633,8 @@
       geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=biomass_OD_mean - biomass_OD_sd, ymax=biomass_OD_mean + biomass_OD_sd), width= 0.4) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 0.15, 0.05), expand = expand_scale(mult = c(0.05,0.2))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       labs( y = " ") +
@@ -660,8 +660,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=biomass_OD_mean - biomass_OD_sd, ymax=biomass_OD_mean + biomass_OD_sd), width= 0.4) +
       labs(y = expression("OD"["750"])) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 0.16, 0.05), expand = expand_scale(mult = c(0.05, 0.12))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 1.5, y = 0.16, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -685,8 +685,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=biomass_OD_mean - biomass_OD_sd, ymax=biomass_OD_mean + biomass_OD_sd), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 0.2, 0.05), expand = expand_scale(mult = c(0.05,0.2))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 2.6, y = 0.2, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -730,8 +730,8 @@
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 0.4) +
     labs(x = "Days") +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
+    scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 25, 5), expand = expand_scale(mult = c(0.1,0.2))) +  
     annotate("text", x = 2.6, y = 23, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -754,8 +754,8 @@
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 0.4) +
     labs(y = " ") +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
+    scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 20, 5), expand = expand_scale(mult = c(0.1,0.2))) +  # Change scale depending on values
     annotate("text", x = 2.5, y = 20, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
@@ -780,8 +780,8 @@
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 0.4) +
     labs(y = bquote('Bacteria'~(10^6~'cells/mL'))) +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
+    scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 55, 10), expand = expand_scale(mult = c(0.05,0.15))) +  # Change scale depending on values
     annotate("text", x = 1.5, y = 52, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -826,7 +826,7 @@
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=PC_net_mean - PC_net_sd, ymax=PC_net_mean + PC_net_sd), width= 0.4, position = position_dodge(0.9)) +
       labs(y = "Algae Biomass (mM C)", title = expression(paste(italic("Staurosira"), " sp. C323"))) +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.05)), breaks = seq(0,8, by = 2)) +
       annotate("text", x = 0.75, y = 8, label = expression(paste(bold("C"))), size = 4) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
@@ -854,7 +854,7 @@
       geom_errorbar(aes(ymin=(AlgaeLipidsPerCell_final_mean - AlgaeLipidsPerCell_final_sd)/10^6, ymax=(AlgaeLipidsPerCell_final_mean + AlgaeLipidsPerCell_final_sd)/10^6), width= 0.4, position = position_dodge(0.9)) +
       labs(y = "Lipid Content (RFU/cells/mL) ") +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.15, by = 0.05)) +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +   
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43')) +   
       annotate("text", x = 0.75, y = 0.12, label = expression(paste(bold("I"))), size = 4) + 
       theme( legend.position = "none",
              panel.background = element_rect(fill = NA),
@@ -871,7 +871,7 @@
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(mu_mean - mu_sd), ymax=(mu_mean + mu_sd)), width= 0.4, position = position_dodge(0.9)) +
       scale_y_continuous(expand = expand_scale(mult = c(0.05, 0.1)), breaks = seq(-0.5, 1.5, by = 0.5)) +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43')) +   
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43')) +   
       annotate("text", x = 0.75, y = 1.4, label = expression(paste(bold("F"))), size = 4) + 
       theme( legend.position = "none",
              panel.background = element_rect(fill = NA),
@@ -888,7 +888,7 @@
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(FvFm_final_mean - FvFm_final_sd), ymax=(FvFm_final_mean + FvFm_final_sd)), width= 0.4, position = position_dodge(0.9)) +
       labs(y = 'Final Fv/Fm', x = "Medium Reuses") +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), 
+      scale_fill_manual(labels = c("Fresh", "Reused"), 
                         values = c('gray63','gray43')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.6, by = 0.2)) +
       annotate("text", x = 0.75, y = 0.6, label = expression(paste(bold("L"))), size = 4) + 
@@ -907,7 +907,7 @@
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=PC_net_mean - PC_net_sd, ymax=PC_net_mean + PC_net_sd), width= 0.4, position = position_dodge(0.9)) +
       labs(y = "Algae Biomass (mM C)", title = expression(paste(italic("Chlorella"), " sp. D046"))) +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.05)), breaks = seq(0,8, by = 2)) +
       annotate("text", x = 0.75, y = 6.3, label = expression(paste(bold("A"))), size = 4) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
@@ -935,7 +935,7 @@
       geom_errorbar(aes(ymin=(AlgaeLipidsPerCell_final_mean - AlgaeLipidsPerCell_final_sd)/10^6, ymax=(AlgaeLipidsPerCell_final_mean + AlgaeLipidsPerCell_final_sd)/10^6), width= 0.4, position = position_dodge(0.9)) +
       labs(y = "Lipid Content (RFU/cells/mL) ") +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.01, by = 0.004)) +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +   
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4')) +   
       annotate("text", x = 0.75, y = 0.0095, label = expression(paste(bold("G"))), size = 4) + 
       theme( legend.position = "none",
              panel.background = element_rect(fill = NA),
@@ -953,7 +953,7 @@
       geom_errorbar(aes(ymin=(mu_mean - mu_sd), ymax=(mu_mean + mu_sd)), width= 0.4, position = position_dodge(0.9)) +
       labs(y = expression(paste("Growth rate ", ("day"^-1)))) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 1.5, by = 0.5)) +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +   
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4')) +   
       annotate("text", x = 0.75, y = 1.7, label = expression(paste(bold("D"))), size = 4) + 
       theme( legend.position = "none",
              panel.background = element_rect(fill = NA),
@@ -971,7 +971,7 @@
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(FvFm_final_mean - FvFm_final_sd), ymax=(FvFm_final_mean + FvFm_final_sd)), width= 0.4, position = position_dodge(0.9)) +
       labs(y = expression(paste("Final ", "F"["v"]*"/F"["m"])), x = " ") +  # Placeholder x-axis title to keep space for grid plot
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.6, by = 0.2)) +
       annotate("text", x = 0.75, y = 0.55, label = expression(paste(bold("J"))), size = 4) + 
       theme( axis.title.x = element_text(margin = margin(r = 25), size = 9),
@@ -990,7 +990,7 @@
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=PC_net_mean - PC_net_sd, ymax=PC_net_mean + PC_net_sd), width= 0.4, position = position_dodge(0.9)) +
       labs(y = "Algae Biomass (mM C)", title = expression(paste(italic("Navicula"), " sp."))) +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.05)), breaks = seq(0,10, by = 2)) +
       annotate("text", x = 0.75, y = 10, label = expression(paste(bold("B"))), size = 4) + 
       theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
@@ -1017,7 +1017,7 @@
       geom_errorbar(aes(ymin=(AlgaeLipidsPerCell_final_mean - AlgaeLipidsPerCell_final_sd)/10^6, ymax=(AlgaeLipidsPerCell_final_mean + AlgaeLipidsPerCell_final_sd)/10^6), width= 0.4, position = position_dodge(0.9)) +
       labs(y = "Lipid Content (RFU/cells/mL) ") +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.15, by = 0.05)) +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +   
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +   
       annotate("text", x = 0.75, y = 0.13, label = expression(paste(bold("H"))), size = 4) + 
       theme( legend.position = "none",
              panel.background = element_rect(fill = NA),
@@ -1035,7 +1035,7 @@
       geom_errorbar(aes(ymin=(mu_mean - mu_sd), ymax=(mu_mean + mu_sd)), width= 0.4, position = position_dodge(0.9)) +
       labs(y = 'Specific growth rate (1/day)') +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 1.5, by = 0.5)) +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +   
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +   
       annotate("text", x = 0.75, y = 1.4, label = expression(paste(bold("E"))), size = 4) + 
       theme( legend.position = "none",
              panel.background = element_rect(fill = NA),
@@ -1054,7 +1054,7 @@
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(FvFm_final_mean - FvFm_final_sd), ymax=(FvFm_final_mean + FvFm_final_sd)), width= 0.4, position = position_dodge(0.9)) +
       labs(y = 'Final Fv/Fm', x = "Medium Reuses") +
-      scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
+      scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.6, by = 0.2)) +
       annotate("text", x = 0.75, y = 0.6, label = expression(paste(bold("K"))), size = 4) + 
       theme( axis.title.x = element_text(margin = margin(t = 5), size = 11),  
@@ -1111,8 +1111,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=pH_mean - pH_sd, ymax=pH_mean + pH_sd), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6,10),breaks = seq(6,10, 1), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 2.6, y = 9.7, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -1135,8 +1135,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=pH_mean - pH_sd, ymax=pH_mean + pH_sd), width= 0.4) +
       labs(y = " ") +  # x axis label as space holder for space
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6, 10),breaks = seq(0, 10, 1), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 2.5, y = 9.7, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
@@ -1161,8 +1161,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=pH_mean - pH_sd, ymax=pH_mean + pH_sd), width= 0.4) +
       labs(y = "pH") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6,10),breaks = seq(6, 10, 1), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 1.5, y = 9.7, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1208,8 +1208,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=(DIC_mean - DIC_sd)/1000, ymax=(DIC_mean + DIC_sd)/1000), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,12),breaks = seq(0,12, 4), expand = expand_scale(mult = c(0,0))) +
       annotate("text", x = 2.6, y = 9.7, label = expression(paste(bold("B"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -1234,8 +1234,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=DIC_mean - DIC_sd, ymax=DIC_mean + DIC_sd), width= 0.4) +
       labs(y = "DIC (mM)") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,5),breaks = seq(0, 5, 2), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 1.5, y = 4.5, label = expression(paste( bold("A"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1279,8 +1279,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=Salinity_mean - Salinity_sd, ymax=Salinity_mean + Salinity_sd), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25,39),breaks = seq(25,39, 5), expand = expand_scale(mult = c(0,0))) +
       annotate("text", x = 2.6, y = 37, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -1302,8 +1302,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=Salinity_mean - Salinity_sd, ymax=Salinity_mean + Salinity_sd), width= 0.4) +
       labs(y = " ") +  # x axis label as space holder for space
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25, 39),breaks = seq(25, 39, 5), expand = expand_scale(mult = c(0,0))) +
       annotate("text", x = 2.5, y = 37, label = expression(paste(bold("A"), italic("  Chlorella "), "sp. D046")), size = 5) + 
@@ -1327,8 +1327,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=Salinity_mean - Salinity_sd, ymax=Salinity_mean + Salinity_sd), width= 0.4) +
       labs(y = "Salinity (ppt)") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25,39),breaks = seq(25, 39, 5), expand = expand_scale(mult = c(0,0))) +
       annotate("text", x = 1.5, y = 37, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1374,8 +1374,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=OD750_filt_mean - OD750_filt_sd, ymax=OD750_filt_mean + OD750_filt_sd), width= 0.4) +
       labs(x = "Days") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.06),breaks = seq(0, 0.06, 0.02), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 2.6, y = 0.056, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -1398,8 +1398,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=OD750_filt_mean - OD750_filt_sd, ymax=OD750_filt_mean + OD750_filt_sd), width= 0.4) +
       labs(y = " ") +  # x axis label as space holder for space
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.06),breaks = seq(0,0.06, 0.02), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 2.5, y = 0.055, label = expression(paste(bold("A"), italic("  Chlorella "), "sp. D046")), size = 5) + 
@@ -1424,8 +1424,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=OD750_filt_mean - OD750_filt_sd, ymax=OD750_filt_mean + OD750_filt_sd), width= 0.4) +
       labs(y = expression("OD"["750"]*" of culture filtrate")) +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.08),breaks = seq(0,0.08, 0.02), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 1.4, y = 0.076, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1471,8 +1471,8 @@
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 0.4) +
     labs(x = "Days") +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+    scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(limits = c(0, 0.305), breaks = seq(0,0.3, 0.1), expand = expand_scale(mult = c(0.05,0.2))) +
     annotate("text", x = 2.6, y = 0.3, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -1495,8 +1495,8 @@
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 0.4) +
       labs(y = " ") +
-      scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-      scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+      scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+      scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(breaks = seq(0, 0.7, 0.2), expand = expand_scale(mult = c(0.05,0.2))) +
       annotate("text", x = 2.6, y = 0.68, label = expression(paste( bold("A"), italic(" Chlorella"), " sp. D046")), size = 5) + 
@@ -1521,8 +1521,8 @@
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 0.4) +
     labs(x = "Days", y = "Biologically-derived DOC (mM)") +
-    scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-    scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+    scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+    scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 2.2, 0.5), expand = expand_scale(mult = c(0.05,0.2))) +
     annotate("text", x = 1.4, y = 2.1, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1567,7 +1567,7 @@
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=(fraction_DOC_net_mean - fraction_DOC_net_sd)*100, ymax=(fraction_DOC_net_mean + fraction_DOC_net_sd)*100), width= 0.4, position = position_dodge(0.9)) +
         labs(x = "Medium Reuses", title = expression( paste( italic("Chlorella"), " sp. D046"))) +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4')) +
+        scale_fill_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0.05)), breaks = seq(0,5, by = 1)) +
         annotate("text", x = 0.75, y = 5.2, label = expression(paste(bold("C"))), size = 5) + 
         theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
@@ -1598,7 +1598,7 @@
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=(fraction_DOC_net_mean - fraction_DOC_net_sd)*100, ymax=(fraction_DOC_net_mean + fraction_DOC_net_sd)*100), width= 0.4, position = position_dodge(0.9)) +
         labs(title = expression(paste(italic("Staurosira"), " sp. C323"))) +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), 
+        scale_fill_manual(labels = c("Fresh", "Reused"), 
                           values = c('gray63','gray43')) +
         scale_y_continuous(expand = expand_scale(mult = c(0.05,0)), breaks = seq(0,30, by = 10)) +
         annotate("text", x = 0.7, y = 32, label = expression(paste(bold("B"))), size = 5) + 
@@ -1622,7 +1622,7 @@
                                  aes(x = Round, y = fraction_DOC_cumulative_mean*100, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=(fraction_DOC_cumulative_mean - fraction_DOC_cumulative_sd)*100, ymax=(fraction_DOC_cumulative_mean + fraction_DOC_cumulative_sd)*100), width= 0.4, position = position_dodge(0.9)) +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), 
+        scale_fill_manual(labels = c("Fresh", "Reused"), 
                           values = c('gray63','gray43')) +
         labs(x = "Medium Reuses") +
         scale_y_continuous(expand = expand_scale(mult = c(0,0.05)), breaks = seq(0,40, by = 10)) +
@@ -1643,7 +1643,7 @@
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=(fraction_DOC_net_mean - fraction_DOC_net_sd)*100, ymax=(fraction_DOC_net_mean + fraction_DOC_net_sd)*100), width= 0.4, position = position_dodge(0.9)) +
         labs(y = "Accumulated DOC\n(% of TOC)", x = " ", title = expression(paste(italic("Navicula"), " sp."))) +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), 
+        scale_fill_manual(labels = c("Fresh", "Reused"), 
                           values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0)), breaks = seq(0,10, by = 2)) +
         annotate("text", x = 0.75, y = 8, label = expression(paste(bold("A"))), size = 5) + 
@@ -1669,7 +1669,7 @@
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=(fraction_DOC_cumulative_mean - fraction_DOC_cumulative_sd)*100, ymax=(fraction_DOC_cumulative_mean + fraction_DOC_cumulative_sd)*100), width= 0.4, position = position_dodge(0.9)) +
         labs(x = "Medium Reuses", y = "Released DOC\n(% of TOC)") +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), 
+        scale_fill_manual(labels = c("Fresh", "Reused"), 
                           values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0.05)), breaks = seq(0,80, by = 20)) +
         annotate("text", x = 0.75, y = 80, label = expression(paste(bold("D"))), size = 5) + 
@@ -1717,8 +1717,8 @@
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(DOC_rate_mean - DOC_rate_sd)/1000, ymax=(DOC_rate_mean + DOC_rate_sd)/1000), width= 0.4) +
         labs(x = "Days") +
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+        scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(-0.02,2), breaks = seq(0, 2, 0.5), expand = expand_scale(mult = c(0.05,0))) +
         annotate("text", x = 2.6, y = 1.7, label = expression(paste(bold("B"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -1742,8 +1742,8 @@
         geom_errorbar(aes(ymin=(DOC_rate_mean - DOC_rate_sd)/1000, ymax=(DOC_rate_mean + DOC_rate_sd)/1000), width= 0.4) +
         labs(y = "DOC Release Rate (mM/day)") +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+        scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(0,7),breaks = seq(0, 7, 2), expand = expand_scale(mult = c(0.1,0.1))) +
         annotate("text", x = 1.5, y = 6.5, label = expression(paste( bold("A"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1787,8 +1787,8 @@
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(fraction_DOC_rate_mean - fraction_DOC_rate_sd)*100, ymax=(fraction_DOC_rate_mean + fraction_DOC_rate_sd)*100), width= 0.4) +
         labs(x = "Days") +
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+        scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(-50,60), breaks = seq(-50, 60, 25), expand = expand_scale(mult = c(0.1,0.1))) +
         annotate("text", x = 2.9, y = 54, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
@@ -1811,8 +1811,8 @@
         geom_errorbar(aes(ymin=(fraction_DOC_rate_mean - fraction_DOC_rate_sd)*100, ymax=(fraction_DOC_rate_mean + fraction_DOC_rate_sd)*100), width= 0.4) +
         labs(y = "DOC Release Rate (% of TOC)") +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+        scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(0,90),breaks = seq(0, 90, 20), expand = expand_scale(mult = c(0,0.1))) +
         annotate("text", x = 1.6, y = 84, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
@@ -1835,8 +1835,8 @@
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(fraction_DOC_rate_mean - fraction_DOC_rate_sd)*100, ymax=(fraction_DOC_rate_mean + fraction_DOC_rate_sd)*100), width= 0.4) +
         labs(y = " ") +  # x axis label as space holder for space
-        scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-        scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+        scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+        scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(0, 43),breaks = seq(0, 43, 10), expand = expand_scale(mult = c(0.05,0.2))) +
         annotate("text", x = 2.5, y = 42, label = expression(paste(bold("A"), italic(" Chlorella "),"sp. D046")), size = 5) + 
@@ -1881,7 +1881,7 @@
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=DOC_net_mean - DOC_net_sd, ymax=DOC_net_mean + DOC_net_sd), width= 0.4, position = position_dodge(0.9)) +
         labs(x = "Medium Reuses", title = expression(paste( italic("Chlorella "), "sp. D046"))) +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), 
+        scale_fill_manual(labels = c("Fresh", "Reused"), 
                           values = c('green3', 'green4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0)), breaks = seq(0,0.3, by = 0.1)) +
         annotate("text", x = 0.75, y = 0.23, label = expression(paste(bold("C"))), size = 5) + 
@@ -1914,7 +1914,7 @@
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=DOC_net_mean - DOC_net_sd, ymax=DOC_net_mean + DOC_net_sd), width= 0.4, position = position_dodge(0.9)) +
         labs(title = expression(paste(italic("Staurosira"), " sp. C323"))) +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), 
+        scale_fill_manual(labels = c("Fresh", "Reused"), 
                           values = c('gray63','gray43')) +
         scale_y_continuous(expand = expand_scale(mult = c(0.05,0)), breaks = seq(0,0.3, by = 0.05)) +
         annotate("text", x = 0.7, y = 0.1, label = expression(paste(bold("B"))), size = 5) + 
@@ -1938,7 +1938,7 @@
                                  aes(x = Round, y = DOC_cumulative_mean, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=DOC_cumulative_mean - DOC_cumulative_sd, ymax=DOC_cumulative_mean + DOC_cumulative_sd), width= 0.4, position = position_dodge(0.9)) +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), 
+        scale_fill_manual(labels = c("Fresh", "Reused"), 
                           values = c('gray63','gray43')) +
         labs(x = "Medium Reuses") +
         scale_y_continuous(expand = expand_scale(mult = c(0,0.05)), breaks = seq(0,3, by = 1)) +        
@@ -1959,7 +1959,7 @@
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=DOC_net_mean - DOC_net_sd, ymax=DOC_net_mean + DOC_net_sd), width= 0.4, position = position_dodge(0.9)) +
         labs(y = "Accumulated DOC (mM)", x = " ", title = expression(paste(italic("Navicula"), " sp."))) +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4')) +
+        scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0)), breaks = seq(0,0.6, by = 0.2)) +
         annotate("text", x = 0.75, y = 0.58, label = expression(paste(bold("A"))), size = 5) + 
         theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
@@ -1984,7 +1984,7 @@
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=DOC_cumulative_mean - DOC_cumulative_sd, ymax=DOC_cumulative_mean + DOC_cumulative_sd), width= 0.4, position = position_dodge(0.9)) +
         labs(x = "Medium Reuses", y = "Released DOC (mM)") +
-        scale_fill_manual(labels = c("Fresh", "Recycled"), 
+        scale_fill_manual(labels = c("Fresh", "Reused"), 
                           values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0.05)), breaks = seq(0,15, by = 5)) +
         annotate("text", x = 0.75, y = 16, label = expression(paste(bold("D"))), size = 5) + 
@@ -2030,8 +2030,8 @@
           geom_line(size = 1) +
           geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 10) +
           labs(y = bquote('Bacteria'~(10^6~'cells/mL')), x = " ") +
-          scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-          scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
+          scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+          scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
           scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260)) +
           scale_y_continuous(limits = c(0,8), expand = expand_scale(mult = c(0,0.05))) +
           annotate("text", x = 10, y = 7.8, label = expression(paste(bold("D"))), size = 4.5) + 
@@ -2049,8 +2049,8 @@
               geom_point(size = 2.5) +
               geom_line(size = 1) +
               geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 10) +
-              scale_color_manual(labels = c("Fresh", "Recycled"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
-              scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+              scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
+              scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
               labs(title = expression(paste(italic("Chlorella"), " sp. D046")), y = "DOC (mM)") +
               scale_y_continuous(expand = expand_scale(mult = c(0,0)), limits = c(0,1), breaks = seq(0,1, by = 0.2)) +
               scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
@@ -2081,8 +2081,8 @@
             geom_line(size = 1) +
             geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 10) +
             labs(y = bquote('Bacteria'~(10^6~'cells/mL'))) +
-            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
+            scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+            scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(limits = c(0,12), expand = expand_scale(mult = c(0.05,0))) +
             annotate("text", x = 10, y = 11, label = expression(paste(bold("F"))), size = 4.5) + 
@@ -2100,8 +2100,8 @@
             geom_point(size = 2.5) +
             geom_line(size = 1) +
             geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 10) +
-            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
-            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+            scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
+            scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
             labs(x = "Medium Reuses", title = expression(paste(italic("Staurosira"), " sp. C323")), y = "DOC (µM)") +
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(expand = expand_scale(mult = c(0,0)), limits = c(0, 0.2), breaks = seq(0,0.2, by = 0.05)) +
@@ -2131,8 +2131,8 @@
             geom_line(size = 1) +
             geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 10) +
             labs(x = "Days") +
-            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
+            scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+            scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(limits = c(0,8), breaks = seq(0, 8, by = 2), expand = expand_scale(mult = c(0.05,0))) +
             annotate("text", x = 10, y = 7.5, label = expression(paste(bold("E"))), size = 4.5) + 
@@ -2151,8 +2151,8 @@
             geom_point(size = 2.5) +
             geom_line(size = 1) +
             geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 10) +
-            scale_color_manual(labels = c("Fresh", "Recycled"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
-            scale_shape_manual(labels = c("Fresh", "Recycled"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
+            scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
+            scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
             labs(title = expression(paste(italic("  Navicula"), " sp."))) +
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(expand = expand_scale(mult = c(0,0)), limits = c(0, 2.5), breaks = seq(0,2.5, by = 0.5)) +
@@ -2205,12 +2205,12 @@
           grid.draw(saved_filtrate_plot)
           dev.off() 
 
-#### Figure S10: Biomass response (PC_net normalized by mean PC_net in Fresh medium) versus initial DOC in the recycled medium ####
+#### Figure S10: Biomass response (PC_net normalized by mean PC_net in Fresh medium) versus initial DOC in the reused medium ####
 
 DOC_biomass_plot <- ggplot(data = initialDOC_PC_final, 
                            aes(x = initial_DOC, y = PC_R_normalized, color = Algae, shape = Algae))  +
   geom_point(alpha = 0.6, size = 3) +
-  labs(x = "Initial DOC (µM) in Recycled Medium", y = "Normalized Biomass Yield in Recycled Medium") +
+  labs(x = "Initial DOC (µM) in Reused Medium", y = "Normalized Biomass Yield in Reused Medium") +
   scale_color_manual(labels = c(expression(paste(italic("Staurosira"), " sp. C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp."))),
                      values = c('gray43','green4','dodgerblue4')) +
   scale_shape_manual(labels = c(expression(paste(italic("Staurosira"), " sp. C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp."))), 
