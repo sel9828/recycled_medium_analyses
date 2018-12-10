@@ -1,17 +1,16 @@
-# Project: Microalgae Recycled Growth Medium Experiments
+# Project: Microalgae Reused Growth Medium Experiments
 # Author: Sarah Loftus, sarah.e.loftus@gmail.com
 
-# This code organizes, analyses, and visualizes data from mircoalgae recycled medium studies. 
-# Results of analyses are published in Loftus & Johnson, 2019, "   ", Journal. 
+# This code organizes, analyses, and visualizes data from mircoalgae reused medium studies. 
 
-# Data is available at Figshare: DOI
+# Input data and meta data are also available on Figshare: https://dx.doi.org/10.6084/m9.figshare.7237553
 
 #######################################################################################
 
 ### Install packages ###
 
   # Data management
-    library(tidyverse) # includes ggplot2
+    library(tidyverse) 
     library(lubridate)
     library(broom)
   
@@ -23,12 +22,13 @@
     library(gtable)
     library(grid)
 
-### Read Data (see metadata for CSV file column descriptions)
+#### Read Data (see metadata for CSV file column descriptions) ####
+
   growth_df <- read.csv("input_data/DataTable1_Growth.csv")        # Algae growth and experimental data for each culture replicate
   daily_df <- read.csv("input_data/DataTable2_Daily.csv")          # Daily sampling data 
-  filtrate_df <- read.csv("input_data/DataTable3_Filtrate.csv")    # Post-experiment saved filtrate data
+  filtrate_df <- read.csv("input_data/DataTable3_Filtrate.csv")    # Post-experiment filtrate data
     
-#### Parse dates and times, and calculate Days elapsed ####
+#### Parse dates and times, and calculate Days Elapsed ####
 
     daily_df %>%
       mutate(Date = mdy(Date),   
@@ -38,7 +38,7 @@
       group_by(Algae) %>% 
       do(mutate(., DaysElapsed = ((Date + Tmid) - (Date[Round == 0 & Day == 0] + Tmid[Round == 0 & Day == 0]) )/ 86400) ) %>%   # DaysElapsed =  days elapsed since start of each experiment
       select(Algae, Round, Day, Chl_medium, OD750_medium, DaysElapsed) -> daily_df2 
-      # Note: warning messages do not pose problem to further analysis
+      # Note: warning messages ("Vectorizing 'Period' elements may not preserve their attributes") do not pose problem to further analysis
   
   # Find average and standard deviation of OD of ASW growth medium across all experiments
     avg_ASW_OD <- mean(daily_df$OD750_medium)
@@ -50,14 +50,14 @@
   
   growth_df %>%    
     inner_join(daily_df2, by = c("Algae", "Round", "Day") ) %>%   # Add daily measurement data to growth data frame
-    mutate(uM_PC = PC/(Vol/1000),                      # uM_PC = Blank-corrected PC concentration of biomass in micromolar
-           uM_PN = PN/(Vol/1000),                      # uM PN = Blank-corrected PN concentration of biomass in micromolar
+    mutate(uM_PC = PC/(Vol/1000),                      # uM_PC = Blank-corrected PC concentration of biomass in micromolar C
+           uM_PN = PN/(Vol/1000),                      # uM PN = Blank-corrected PN concentration of biomass in micromolar N
            CN_ratio = PC/PN,                           # CN_raio = C/N ratio of algae biomass (unitless)
            C_per_cell = (C_mol_wt*uM_PC/(AlgaeConc*10^9))*10^6,   # C_per_cell = Carbon content of cells in picogram C/cell
            AlgaeLipids = BulkLipids - ExtLipids,       # AlgaeLipids = Lipid concentration of algae biomass in relative fluorescence units (RFU)
            AlgaeLipidsPerCell = AlgaeLipids/AlgaeConc, # AlgaeLipidsPerCell = Lipid content of cells in RFU/(10^6 cells/mL)
            DOC_rate = TOC_rate - POC_rate,             # DOC_rate = DOC release rate in uM/day. Note: For Chlorella sp. D046 experiment, this is not the calculated rate but is the raw, blank-corrected, mean DPM (disintegrations per minute) divided by 14C DPM added. Therefore absolute values cannot be compared among replicates or treatments (however, comparing fractions of POC/TOC, etc. is still allowable).
-           fraction_DOC_rate = DOC_rate/TOC_rate,      # fraction_DOC_rate = DOC release rate as a fraction of TOC production rate. Note: For Chlorella sp. D046 experiment, this is the fraction of the raw, blank-corrected, mean DPM (disintegrations per minute).
+           fraction_DOC_rate = DOC_rate/TOC_rate,      # fraction_DOC_rate = DOC release rate as a fraction of TOC production rate. 
            biomass_OD = OD750 -  OD750_medium,         # biomass_OD = Blank-corrected OD750 of the culture, in arbitrary units
            biomass_chl = Chl - Chl_medium              # biomass_chl = Blank-corrected chlorophyll-a concentration of the culture, in relative fluorescence units.
            ) -> growth_df2    
@@ -118,6 +118,31 @@
     growth_df2$AlgaeLipidsPerCell[growth_df2$Algae == 'C323' & growth_df2$Treatment == "F" & growth_df2$Round == 1 & growth_df2$Day == 5 & growth_df2$Replicate == "A"] <- 
            growth_df2$AlgaeLipids[growth_df2$Algae == 'C323' & growth_df2$Treatment == "F" & growth_df2$Round == 1 & growth_df2$Day == 5 & growth_df2$Replicate == "A"] / growth_df2$AlgaeConc[growth_df2$Algae == 'C323' & growth_df2$Treatment == "F" & growth_df2$Round == 1 & growth_df2$Day == 5 & growth_df2$Replicate == "A"]
 
+    
+  # Check regression of OD vs algae cell concentrations to compare with other experiments
+    OD_vs_cell_Navicula <- lm(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "Navicula", ])  
+    # R^2 = 0.9743, biomass OD = 0.130640*AlgaeConc - 0.001821
+    
+    OD_vs_cell_C323 <- lm(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == 'C323', ])  
+    # R^2 = 0.9542, biomass OD = 0.046608*AlgaeConc + 0.002648
+    
+    OD_vs_cell_D046 <- lm(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == 'D046', ])  
+    # R^2 = 0.9469, biomass OD = 0.016297*AlgaeConc + 0.001099
+    
+    # Plots
+    plot(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "Navicula", ], 
+         xlab = "Algae Concentration (million cells/mL)", ylab = "OD 750", main = "Navicula sp.")
+        abline(lm(growth_df2$biomass_OD[growth_df2$Algae == "Navicula"] ~ growth_df2$AlgaeConc[growth_df2$Algae == "Navicula"]))
+    
+   plot(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "D046", ], 
+             xlab = "Algae Concentration (million cells/mL)", ylab = "OD 750", main = "Chlorella sp. D046")
+        abline(lm(growth_df2$biomass_OD[growth_df2$Algae == "D046"] ~ growth_df2$AlgaeConc[growth_df2$Algae == "D046"]))
+        
+   plot(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "C323", ], 
+             xlab = "Algae Concentration (million cells/mL)", ylab = "OD 750", main = "Staurosira sp. C323")
+        abline(lm(growth_df2$biomass_OD[growth_df2$Algae == "C323"] ~ growth_df2$AlgaeConc[growth_df2$Algae == "C323"]))
+        
+  
 #### Calculate variables for algae growth statistics ####
 
     day_start <- 0          # day_start = Starting day of each round
