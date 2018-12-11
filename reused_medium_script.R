@@ -2,6 +2,7 @@
 # Author: Sarah Loftus, sarah.e.loftus@gmail.com
 
 # This code organizes, analyses, and visualizes data from mircoalgae reused medium studies. 
+# Run on Mac OS X 10.10.5; RStudio version 1.1.383; R version 3.3.3. 
 
 # Input data and meta data are also available on Figshare: https://dx.doi.org/10.6084/m9.figshare.7237553
 
@@ -505,17 +506,17 @@
       geom_point(size = 2.5) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=AlgaeConc_mean - AlgaeConc_sd, ymax=AlgaeConc_mean + AlgaeConc_sd), width= 0.4) +
-      labs(x = "Days", y = bquote('Algae'~(10^6~'cells/mL'))) +
+      labs(x = "Days") +
       scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 2), expand = expand_scale(mult = c(0.05,0.1))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 2.6, y = 4.4, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
              legend.position = c(0.93,0.23),
-             axis.title.y = element_blank(),  # moves axis title away from axis label
+             axis.title.y = element_blank(),  
              axis.title.x = element_text(margin = margin(r = 15), size = 14),   
              panel.background = element_rect(fill = "white"),
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
@@ -537,7 +538,7 @@
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 30, 5)) +
       annotate("text", x = 2.3, y = 9, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
       annotate("text", x = c(9, 15, 21, 27), y = 9, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
              axis.title.y = element_text(margin = margin(r = 15), size = 14),
@@ -556,17 +557,17 @@
       geom_point(size = 2.5) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=AlgaeConc_mean - AlgaeConc_sd, ymax=AlgaeConc_mean + AlgaeConc_sd), width= 0.4) +
-      labs(x = "Days", y = bquote('Algae'~(10^6~'cells/mL'))) +
+      labs(x = "Days", y = expression(paste("Algae (10"^6, " cells mL"^-1, ")"))) +
       scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 1.2, 0.4), expand = expand_scale(mult = c(0.05,0.12))) +  # Change scale depending on values
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 1.5, y = 1.05, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      annotate("text", x = 2.1, y = 1.05, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+      theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
              legend.position = c(0.93,0.23),
-             axis.title.y = element_text(margin = margin(r = 15), size = 14),  # moves axis title away from axis label
+             axis.title.y = element_text(margin = margin(r = 15), size = 14),  
              axis.title.x = element_blank(),   
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
              panel.border = element_rect(color = "gray60", fil = NA),            
@@ -607,9 +608,9 @@
       scale_y_continuous(breaks = seq(0, 0.15, 0.05), expand = expand_scale(mult = c(0.05,0.2))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       labs( y = " ") +
-      annotate("text", x = 2.5, y = 0.17, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
+      annotate("text", x = 2.4, y = 0.17, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
       annotate("text", x = c(9, 15, 21, 27), y = 0.17, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
              axis.title.y = element_text(margin = margin(r = 15), size = 14),
@@ -633,8 +634,8 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 0.16, 0.05), expand = expand_scale(mult = c(0.05, 0.12))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 1.5, y = 0.16, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      annotate("text", x = 2.1, y = 0.16, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+      theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
              legend.position = c(0.94,0.23),
@@ -659,7 +660,7 @@
       scale_y_continuous(breaks = seq(0, 0.2, 0.05), expand = expand_scale(mult = c(0.05,0.2))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
       annotate("text", x = 2.6, y = 0.2, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
              legend.position = c(0.94,0.23),
@@ -704,7 +705,7 @@
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 25, 5), expand = expand_scale(mult = c(0.1,0.2))) +  
     annotate("text", x = 2.6, y = 23, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-    theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+    theme( legend.key = element_rect(fill = NA),  
            legend.text = element_text(size = 10),
            legend.position = c(0.07,0.55),
            legend.title = element_blank(),
@@ -726,10 +727,10 @@
     scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
     scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
-    scale_y_continuous(breaks = seq(0, 20, 5), expand = expand_scale(mult = c(0.1,0.2))) +  # Change scale depending on values
-    annotate("text", x = 2.5, y = 20, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
+    scale_y_continuous(breaks = seq(0, 20, 5), expand = expand_scale(mult = c(0.1,0.2))) +  
+    annotate("text", x = 2.4, y = 20, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
     annotate("text", x = c(9, 15, 21, 27), y = 20, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
-    theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+    theme( legend.key = element_rect(fill = NA),  
            legend.text = element_text(size = 10),
            legend.position = c(0.07,0.55),
            legend.title = element_blank(),
@@ -748,13 +749,13 @@
     geom_point(size = 3) +
     geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
     geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 0.4) +
-    labs(y = bquote('Bacteria'~(10^6~'cells/mL'))) +
+    labs(y = expression(paste("Bacteria (10"^6, " cells mL"^-1, ")"))) +
     scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
     scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
-    scale_y_continuous(breaks = seq(0, 55, 10), expand = expand_scale(mult = c(0.05,0.15))) +  # Change scale depending on values
-    annotate("text", x = 1.5, y = 52, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
-    theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+    scale_y_continuous(breaks = seq(0, 55, 10), expand = expand_scale(mult = c(0.05,0.15))) +  
+    annotate("text", x = 2.1, y = 52, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+    theme( legend.key = element_rect(fill = NA), 
            legend.text = element_text(size = 10),
            legend.position = c(0.07,0.55),
            legend.title = element_blank(),
@@ -794,11 +795,11 @@
                            aes(x = Round, y = PC_net_mean, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=PC_net_mean - PC_net_sd, ymax=PC_net_mean + PC_net_sd), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = "Algae Biomass (mM C)", title = expression(paste(italic("Staurosira"), " sp. C323"))) +
+      labs(title = expression(paste(italic("Staurosira"), " sp. C323"))) +
       scale_fill_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.05)), breaks = seq(0,8, by = 2)) +
       annotate("text", x = 0.75, y = 8, label = expression(paste(bold("C"))), size = 4) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9, margin = margin(r = 8)),
              legend.position = "top",
@@ -811,8 +812,7 @@
              panel.background = element_rect(fill = NA),
              axis.line = element_line(color = "black", size = 0.4),
              axis.ticks.x = element_blank(),
-             axis.title.y = element_blank(),
-             axis.title.x = element_blank(),
+             axis.title = element_blank(),
              axis.text.y = element_text(size = 9),
              axis.text.x = element_blank()) 
     
@@ -821,7 +821,6 @@
                                aes(x = Round, y = AlgaeLipidsPerCell_final_mean/10^6, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(AlgaeLipidsPerCell_final_mean - AlgaeLipidsPerCell_final_sd)/10^6, ymax=(AlgaeLipidsPerCell_final_mean + AlgaeLipidsPerCell_final_sd)/10^6), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = "Lipid Content (RFU/cells/mL) ") +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.15, by = 0.05)) +
       scale_fill_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43')) +   
       annotate("text", x = 0.75, y = 0.12, label = expression(paste(bold("I"))), size = 4) + 
@@ -831,8 +830,7 @@
              axis.text.x = element_blank(),
              axis.text.y = element_text(size = 9),
              axis.ticks.x = element_blank(),
-             axis.title.y = element_blank(),
-             axis.title.x = element_blank()) 
+             axis.title = element_blank()) 
     
     # mu ####
     mu_plot_C323 <- ggplot(data = MultivarGrowthData_Summary[MultivarGrowthData_Summary$Algae == "C323", ], 
@@ -848,26 +846,23 @@
              axis.text.x = element_blank(),
              axis.text.y = element_text(size = 9),
              axis.ticks.x = element_blank(),
-             axis.title.y = element_blank(),
-             axis.title.x = element_blank()) 
+             axis.title = element_blank()) 
   
     # FvFm final ####
     FvFm_plot_C323 <- ggplot(data = MultivarGrowthData_Summary[MultivarGrowthData_Summary$Algae == "C323", ], 
                              aes(x = Round, y = FvFm_final_mean, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(FvFm_final_mean - FvFm_final_sd), ymax=(FvFm_final_mean + FvFm_final_sd)), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = 'Final Fv/Fm', x = "Medium Reuses") +
       scale_fill_manual(labels = c("Fresh", "Reused"), 
                         values = c('gray63','gray43')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.6, by = 0.2)) +
       annotate("text", x = 0.75, y = 0.6, label = expression(paste(bold("L"))), size = 4) + 
-      theme( axis.title.x = element_blank(),
+      theme( axis.title = element_blank(),
              legend.position = "none",                              
              panel.background = element_rect(fill = NA),
              axis.line = element_line(color = "black", size = 0.4),
              axis.ticks.x = element_blank(),
-             axis.text = element_text(size = 9),
-             axis.title.y = element_blank()) 
+             axis.text = element_text(size = 9)) 
     
   # D046 ####
     # PC net ####
@@ -879,7 +874,7 @@
       scale_fill_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.05)), breaks = seq(0,8, by = 2)) +
       annotate("text", x = 0.75, y = 6.3, label = expression(paste(bold("A"))), size = 4) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9, margin = margin(r = 8)),
              legend.position = "top",
@@ -892,7 +887,7 @@
              panel.background = element_rect(fill = NA),
              axis.line = element_line(color = "black", size = 0.4),
              axis.ticks.x = element_blank(),
-             axis.title.y = element_text(margin = margin(r = 8),size = 10),
+             axis.title.y = element_text(margin = margin(r = 6),size = 9),
              axis.title.x = element_blank(),
              axis.text.y = element_text(size = 9),
              axis.text.x = element_blank()) 
@@ -902,7 +897,7 @@
                                aes(x = Round, y = AlgaeLipidsPerCell_final_mean/10^6, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(AlgaeLipidsPerCell_final_mean - AlgaeLipidsPerCell_final_sd)/10^6, ymax=(AlgaeLipidsPerCell_final_mean + AlgaeLipidsPerCell_final_sd)/10^6), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = "Lipid Content (RFU/cells/mL) ") +
+      labs(y = expression(paste("Lipid Content (RFU cell"^-1, " mL"^-1, ")"))) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.01, by = 0.004)) +
       scale_fill_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4')) +   
       annotate("text", x = 0.75, y = 0.0095, label = expression(paste(bold("G"))), size = 4) + 
@@ -912,7 +907,7 @@
              axis.text.x = element_blank(),
              axis.text.y = element_text(size = 9),
              axis.ticks.x = element_blank(),
-             axis.title.y = element_text(margin = margin(r = 8),size = 10),
+             axis.title.y = element_text(margin = margin(r = 6),size = 9),
              axis.title.x = element_blank()) 
     
     # mu ####
@@ -930,9 +925,8 @@
              axis.text.x = element_blank(),
              axis.text.y = element_text(size = 9),
              axis.ticks.x = element_blank(),
-             axis.title.y = element_text(margin = margin(r = 8),size = 10),
+             axis.title.y = element_text(margin = margin(r = 6),size = 9),
              axis.title.x = element_blank()) 
-    
     
     # FvFm final ####
     FvFm_plot_D046 <- ggplot(data = MultivarGrowthData_Summary[MultivarGrowthData_Summary$Algae == "D046", ], 
@@ -949,8 +943,7 @@
              axis.line = element_line(color = "black", size = 0.4),
              axis.ticks.x = element_blank(),
              axis.text = element_text(size = 9),
-             axis.title.y = element_text(margin = margin(r = 8), size = 10)) 
-    
+             axis.title.y = element_text(margin = margin(r = 6), size = 9)) 
     
   # Navicula #####
     # PC net ####
@@ -958,11 +951,11 @@
                                aes(x = Round, y = PC_net_mean, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=PC_net_mean - PC_net_sd, ymax=PC_net_mean + PC_net_sd), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = "Algae Biomass (mM C)", title = expression(paste(italic("Navicula"), " sp."))) +
+      labs(title = expression(paste(italic("Navicula"), " sp. SFP"))) +
       scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.05)), breaks = seq(0,10, by = 2)) +
       annotate("text", x = 0.75, y = 10, label = expression(paste(bold("B"))), size = 4) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9, margin = margin(r = 8)),
              legend.position = "top",
@@ -984,7 +977,6 @@
                                    aes(x = Round, y = AlgaeLipidsPerCell_final_mean/10^6, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(AlgaeLipidsPerCell_final_mean - AlgaeLipidsPerCell_final_sd)/10^6, ymax=(AlgaeLipidsPerCell_final_mean + AlgaeLipidsPerCell_final_sd)/10^6), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = "Lipid Content (RFU/cells/mL) ") +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.15, by = 0.05)) +
       scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +   
       annotate("text", x = 0.75, y = 0.13, label = expression(paste(bold("H"))), size = 4) + 
@@ -994,15 +986,13 @@
              axis.text.x = element_blank(),
              axis.text.y = element_text(size = 9),
              axis.ticks.x = element_blank(),
-             axis.title.y = element_blank(),
-             axis.title.x = element_blank()) 
+             axis.title = element_blank()) 
     
     # mu ####
     mu_plot_Navicula <- ggplot(data = MultivarGrowthData_Summary[MultivarGrowthData_Summary$Algae == "Navicula", ], 
                                aes(x = Round, y = mu_mean, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(mu_mean - mu_sd), ymax=(mu_mean + mu_sd)), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = 'Specific growth rate (1/day)') +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 1.5, by = 0.5)) +
       scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +   
       annotate("text", x = 0.75, y = 1.4, label = expression(paste(bold("E"))), size = 4) + 
@@ -1013,16 +1003,14 @@
              axis.text.x = element_blank(),
              axis.text.y = element_text(size = 9),
              axis.ticks.x = element_blank(),
-             axis.title.y = element_blank(),
-             axis.title.x = element_blank()) 
-    
+             axis.title = element_blank()) 
     
     # FvFm final ####
     FvFm_plot_Navicula <- ggplot(data = MultivarGrowthData_Summary[MultivarGrowthData_Summary$Algae == "Navicula", ], 
                                  aes(x = Round, y = FvFm_final_mean, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(FvFm_final_mean - FvFm_final_sd), ymax=(FvFm_final_mean + FvFm_final_sd)), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = 'Final Fv/Fm', x = "Medium Reuses") +
+      labs(x = "Medium Reuses") +
       scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.6, by = 0.2)) +
       annotate("text", x = 0.75, y = 0.6, label = expression(paste(bold("K"))), size = 4) + 
@@ -1070,7 +1058,6 @@
     grid.draw(g_final)
     dev.off()
   
-   
 #### Figure S3: Daily pH of cultures ####
 
   # C323 ####    
@@ -1084,8 +1071,8 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6,10),breaks = seq(6,10, 1), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 2.6, y = 9.7, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      annotate("text", x = 2.7, y = 9.7, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+      theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.93,0.23),
@@ -1108,7 +1095,7 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6, 10),breaks = seq(0, 10, 1), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 2.5, y = 9.7, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
+      annotate("text", x = 2.4, y = 9.9, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
       annotate("text", x = c(9, 15, 21, 27), y = 9.7, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
       theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
@@ -1134,16 +1121,15 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(6,10),breaks = seq(6, 10, 1), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 1.5, y = 9.7, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      annotate("text", x = 2.1, y = 9.7, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+      theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.93,0.23),
-             axis.title.y = element_text(margin = margin(r = 15), size = 14),  # moves axis title away from axis label
+             axis.title.y = element_text(margin = margin(r = 15), size = 14),  
              axis.title.x = element_blank(),
              panel.background = element_rect(fill = "white"),
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
-             panel.grid.minor = element_line(colour = "gray95", size = 0.1),
              panel.border = element_rect(color = "gray60", fil = NA),
              axis.ticks = element_blank(),
              axis.text.y = element_text(size = 12),
@@ -1180,9 +1166,9 @@
       scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
-      scale_y_continuous(limits = c(0,12),breaks = seq(0,12, 4), expand = expand_scale(mult = c(0,0))) +
-      annotate("text", x = 2.6, y = 9.7, label = expression(paste(bold("B"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      scale_y_continuous(limits = c(0,13),breaks = seq(0,12, 4), expand = expand_scale(mult = c(0,0.01))) +
+      annotate("text", x = 2.6, y = 11, label = expression(paste(bold("B"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+      theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.93,0.23),
@@ -1193,6 +1179,7 @@
              panel.border = element_rect(color = "gray60", fil = NA),
              axis.ticks = element_blank(),
              axis.text = element_text(size = 12)) 
+
   # Navicula ####  
     Navi_DIC_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula" & !is.na(growth_df_avgs$DIC_mean),],   
                             aes(x = as.numeric(DaysElapsed_mean), y = DIC_mean/1000, color = Treatment, shape = Treatment))  +
@@ -1207,12 +1194,12 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,5),breaks = seq(0, 5, 2), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 1.5, y = 4.5, label = expression(paste( bold("A"), italic("  Navicula"), " sp.")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      annotate("text", x = 2.1, y = 4.6, label = expression(paste( bold("A"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+      theme( legend.key = element_rect(fill = NA), 
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.93,0.8),
-             axis.title.y = element_text(margin = margin(r = 15), size = 14),  # moves axis title away from axis label
+             axis.title.y = element_text(margin = margin(r = 15), size = 14),  
              axis.title.x = element_blank(),
              panel.background = element_rect(fill = "white"),
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
@@ -1253,7 +1240,7 @@
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25,39),breaks = seq(25,39, 5), expand = expand_scale(mult = c(0,0))) +
       annotate("text", x = 2.6, y = 37, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.93,0.23),
@@ -1264,6 +1251,7 @@
              panel.border = element_rect(color = "gray60", fil = NA),
              axis.ticks = element_blank(),
              axis.text = element_text(size = 12)) 
+    
     # D046 ####  
     D046_salt_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "D046" & !is.na(growth_df_avgs$Salinity_mean), ],   
                            aes(x = as.numeric(DaysElapsed_mean), y = Salinity_mean, color = Treatment, shape = Treatment))  +
@@ -1275,7 +1263,7 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25, 39),breaks = seq(25, 39, 5), expand = expand_scale(mult = c(0,0))) +
-      annotate("text", x = 2.5, y = 37, label = expression(paste(bold("A"), italic("  Chlorella "), "sp. D046")), size = 5) + 
+      annotate("text", x = 2.4, y = 37, label = expression(paste(bold("A"), italic("  Chlorella "), "sp. D046")), size = 5) + 
       annotate("text", x = c(9, 15, 21, 27), y = 37, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
       theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
@@ -1289,6 +1277,7 @@
              axis.ticks = element_blank(),
              axis.text.y = element_text(size = 12),
              axis.text.x = element_blank()) 
+    
     # Navicula ####  
     Navi_salt_plot <- ggplot(data = growth_df_avgs[growth_df_avgs$Algae == "Navicula" & !is.na(growth_df_avgs$Salinity_mean), ],   
                            aes(x = as.numeric(DaysElapsed_mean), y = Salinity_mean, color = Treatment, shape = Treatment))  +
@@ -1300,8 +1289,8 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(25,39),breaks = seq(25, 39, 5), expand = expand_scale(mult = c(0,0))) +
-      annotate("text", x = 1.5, y = 37, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      annotate("text", x = 2.1, y = 37, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+      theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.93,0.23),
@@ -1309,7 +1298,6 @@
              axis.title.x = element_blank(),
              panel.background = element_rect(fill = "white"),
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
-             panel.grid.minor = element_line(colour = "gray95", size = 0.1),
              panel.border = element_rect(color = "gray60", fil = NA),
              axis.ticks = element_blank(),
              axis.text.y = element_text(size = 12),
@@ -1348,7 +1336,7 @@
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.06),breaks = seq(0, 0.06, 0.02), expand = expand_scale(mult = c(0,0.1))) +
       annotate("text", x = 2.6, y = 0.056, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.93,0.23),
@@ -1371,8 +1359,8 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.06),breaks = seq(0,0.06, 0.02), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 2.5, y = 0.055, label = expression(paste(bold("A"), italic("  Chlorella "), "sp. D046")), size = 5) + 
-      annotate("text", x = c(9, 15, 21, 27), y = 37, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
+      annotate("text", x = 2.4, y = 0.055, label = expression(paste(bold("A"), italic("  Chlorella "), "sp. D046")), size = 5) + 
+      annotate("text", x = c(9, 15, 21, 27), y = 0.055, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
       theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
@@ -1397,8 +1385,8 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(limits = c(0,0.08),breaks = seq(0,0.08, 0.02), expand = expand_scale(mult = c(0,0.1))) +
-      annotate("text", x = 1.4, y = 0.076, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      annotate("text", x = 2.1, y = 0.076, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+      theme( legend.key = element_rect(fill = NA), 
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.93,0.23),
@@ -1406,7 +1394,6 @@
              axis.title.x = element_blank(),
              panel.background = element_rect(fill = "white"),
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
-             panel.grid.minor = element_line(colour = "gray95", size = 0.1),
              panel.border = element_rect(color = "gray60", fil = NA),
              axis.ticks = element_blank(),
              axis.text.y = element_text(size = 12),
@@ -1443,9 +1430,9 @@
     scale_color_manual(labels = c("Fresh", "Reused"), values = c('gray63','gray43'), guide = guide_legend(reverse=TRUE)) +
     scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
-    scale_y_continuous(limits = c(0, 0.305), breaks = seq(0,0.3, 0.1), expand = expand_scale(mult = c(0.05,0.2))) +
-    annotate("text", x = 2.6, y = 0.3, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-    theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+    scale_y_continuous(limits = c(0, 0.32), breaks = seq(0,0.3, 0.1), expand = expand_scale(mult = c(0.05,0.2))) +
+    annotate("text", x = 2.6, y = 0.31, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+    theme( legend.key = element_rect(fill = NA),  
            legend.text = element_text(size = 10),
            legend.title = element_blank(),
            legend.position = c(0.07,0.55),
@@ -1468,13 +1455,13 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(breaks = seq(0, 0.7, 0.2), expand = expand_scale(mult = c(0.05,0.2))) +
-      annotate("text", x = 2.6, y = 0.68, label = expression(paste( bold("A"), italic(" Chlorella"), " sp. D046")), size = 5) + 
-      annotate("text", x = c(9, 15, 21, 27), y = 0.683, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
-      theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+      annotate("text", x = 2.4, y = 0.69, label = expression(paste( bold("A"), italic(" Chlorella"), " sp. D046")), size = 5) + 
+      annotate("text", x = c(9, 15, 21, 27), y = 0.69, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
+      theme( legend.key = element_rect(fill = NA),  
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.07,0.55),
-             axis.title.y = element_text(margin = margin(r = 15), size = 14),  # moves axis title away from axis label
+             axis.title.y = element_text(margin = margin(r = 15), size = 14),  
              axis.title.x = element_blank(),
              panel.background = element_rect(fill = "white"),
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
@@ -1494,12 +1481,12 @@
     scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 2.2, 0.5), expand = expand_scale(mult = c(0.05,0.2))) +
-    annotate("text", x = 1.4, y = 2.1, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
-    theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+    annotate("text", x = 2.1, y = 2.1, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+    theme( legend.key = element_rect(fill = NA),  
            legend.text = element_text(size = 10),
            legend.title = element_blank(),
            legend.position = c(0.07,0.55),
-           axis.title.y = element_text(margin = margin(r = 15), size = 14),  # moves axis title away from axis label
+           axis.title.y = element_text(margin = margin(r = 15), size = 14),  
            axis.title.x = element_blank(),
            panel.background = element_rect(fill = "white"),
            panel.grid.major = element_line(colour = "gray87", size = 0.2),
@@ -1539,7 +1526,7 @@
         scale_fill_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0.05)), breaks = seq(0,5, by = 1)) +
         annotate("text", x = 0.75, y = 5.2, label = expression(paste(bold("C"))), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        theme( legend.key = element_rect(fill = NA),  
                legend.title = element_blank(),
                legend.text = element_text(size = 10),
                legend.position = "top",
@@ -1554,7 +1541,8 @@
                axis.ticks.x = element_blank(),
                axis.title.x = element_text(margin = margin(r = 22),size = 11),
                axis.title.y = element_blank(),
-               axis.text = element_text(size = 11))   
+               axis.text = element_text(size = 10))   
+     
       # Empty plot ####
       empty_plot <- ggplot(data.frame()) +
         labs(x = " ") +
@@ -1571,13 +1559,13 @@
                           values = c('gray63','gray43')) +
         scale_y_continuous(expand = expand_scale(mult = c(0.05,0)), breaks = seq(0,30, by = 10)) +
         annotate("text", x = 0.7, y = 32, label = expression(paste(bold("B"))), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        theme( legend.key = element_rect(fill = NA),  
                legend.title = element_blank(),
                legend.text = element_text(size = 10),
                legend.position = "top",
                legend.key.size = unit(3, "mm"),
                legend.justification = "center",
-               legend.margin=margin(t = 0, b = 0, l = 1),
+               legend.margin=margin(t = 0, b = 0, l = 2),
                legend.box.margin=margin(t = 0, b = 0),
                legend.spacing.x = unit(1, "mm"),
                plot.title = element_text(hjust = 0.5, size = 11),
@@ -1586,6 +1574,7 @@
                axis.ticks.x = element_blank(),
                axis.title = element_blank(),
                axis.text = element_text(size = 10))
+    
       # Released DOC ####  
       cumDOCpercent_plot_C323 <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "C323", ], 
                                  aes(x = Round, y = fraction_DOC_cumulative_mean*100, fill = Treatment))  +
@@ -1611,12 +1600,12 @@
                                      aes(x = Round, y = fraction_DOC_net_mean*100, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=(fraction_DOC_net_mean - fraction_DOC_net_sd)*100, ymax=(fraction_DOC_net_mean + fraction_DOC_net_sd)*100), width= 0.4, position = position_dodge(0.9)) +
-        labs(y = "Accumulated DOC\n(% of TOC)", x = " ", title = expression(paste(italic("Navicula"), " sp."))) +
+        labs(y = "Accumulated DOC\n(% of TOC)", x = " ", title = expression(paste(italic("Navicula"), " sp. SFP"))) +
         scale_fill_manual(labels = c("Fresh", "Reused"), 
                           values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0)), breaks = seq(0,10, by = 2)) +
         annotate("text", x = 0.75, y = 8, label = expression(paste(bold("A"))), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        theme( legend.key = element_rect(fill = NA),  
                legend.title = element_blank(),
                legend.text = element_text(size = 10),
                legend.position = "top",
@@ -1649,6 +1638,7 @@
                axis.ticks.x = element_blank(),
                axis.title = element_text(margin = margin(r = 15),size = 10),
                axis.text = element_text(size = 10))
+    
    # Combine net and cumulative DOC plots in grid and save as pdf ####
       
       # Convert ggplots to grobs
@@ -1676,7 +1666,6 @@
       grid.draw(netcumDOCpercent_final)
       dev.off()    
 
-
 #### Figure S7: Absolute DOC release rates (mM C/day) over time (C323 & Navicula only) ####
       
       # C323 ####    
@@ -1691,7 +1680,7 @@
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(-0.02,2), breaks = seq(0, 2, 0.5), expand = expand_scale(mult = c(0.05,0))) +
         annotate("text", x = 2.6, y = 1.7, label = expression(paste(bold("B"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        theme( legend.key = element_rect(fill = NA),  
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
                legend.position = c(0.92,0.23),
@@ -1709,18 +1698,18 @@
         geom_point(size = 3) +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(DOC_rate_mean - DOC_rate_sd)/1000, ymax=(DOC_rate_mean + DOC_rate_sd)/1000), width= 0.4) +
-        labs(y = "DOC Release Rate (mM/day)") +
+        labs(y = expression(paste("DOC Release Rate (mM ", "day"^-1, ")"))) +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
         scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(0,7),breaks = seq(0, 7, 2), expand = expand_scale(mult = c(0.1,0.1))) +
-        annotate("text", x = 1.5, y = 6.5, label = expression(paste( bold("A"), italic("  Navicula"), " sp.")), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        annotate("text", x = 2.1, y = 6.5, label = expression(paste( bold("A"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+        theme( legend.key = element_rect(fill = NA),  
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
                legend.position = c(0.93,0.7),
-               axis.title.y = element_text(margin = margin(r = 15), size = 12), 
+               axis.title.y = element_text(margin = margin(r = 15), size = 9), # adjust title size and position manually after saving
                axis.title.x = element_blank(),
                panel.background = element_rect(fill = "white"),
                panel.grid.major = element_line(colour = "gray87", size = 0.2),
@@ -1761,7 +1750,7 @@
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(-50,60), breaks = seq(-50, 60, 25), expand = expand_scale(mult = c(0.1,0.1))) +
         annotate("text", x = 2.9, y = 54, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        theme( legend.key = element_rect(fill = NA),  
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
                axis.title.y = element_blank(),
@@ -1784,11 +1773,11 @@
         scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
         scale_y_continuous(limits = c(0,90),breaks = seq(0, 90, 20), expand = expand_scale(mult = c(0,0.1))) +
-        annotate("text", x = 1.6, y = 84, label = expression(paste( bold("B"), italic("  Navicula"), " sp.")), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        annotate("text", x = 2.3, y = 84, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+        theme( legend.key = element_rect(fill = NA),  
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
-               axis.title.y = element_text(margin = margin(r = 15), size = 14),  # moves axis title away from axis label
+               axis.title.y = element_text(margin = margin(r = 15), size = 14),  
                axis.title.x = element_blank(),
                panel.background = element_rect(fill = "white"),
                panel.grid.major = element_line(colour = "gray87", size = 0.2),
@@ -1807,9 +1796,9 @@
         scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
         scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
         scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
-        scale_y_continuous(limits = c(0, 43),breaks = seq(0, 43, 10), expand = expand_scale(mult = c(0.05,0.2))) +
-        annotate("text", x = 2.5, y = 42, label = expression(paste(bold("A"), italic(" Chlorella "),"sp. D046")), size = 5) + 
-        annotate("text", x = c(9, 15, 21, 27), y = 42, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
+        scale_y_continuous(limits = c(0, 45),breaks = seq(0, 45, 10), expand = expand_scale(mult = c(0.05,0.1))) +
+        annotate("text", x = 2.5, y = 43, label = expression(paste(bold("A"), italic(" Chlorella "),"sp. D046")), size = 5) + 
+        annotate("text", x = c(9, 15, 21, 27), y = 43, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
         theme( legend.key = element_rect(fill = NA),  
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
@@ -1854,7 +1843,7 @@
                           values = c('green3', 'green4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0)), breaks = seq(0,0.3, by = 0.1)) +
         annotate("text", x = 0.75, y = 0.23, label = expression(paste(bold("C"))), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        theme( legend.key = element_rect(fill = NA),  
                legend.title = element_blank(),
                legend.text = element_text(size = 10),
                legend.position = "top",
@@ -1887,7 +1876,7 @@
                           values = c('gray63','gray43')) +
         scale_y_continuous(expand = expand_scale(mult = c(0.05,0)), breaks = seq(0,0.3, by = 0.05)) +
         annotate("text", x = 0.7, y = 0.1, label = expression(paste(bold("B"))), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        theme( legend.key = element_rect(fill = NA),  
                legend.title = element_blank(),
                legend.text = element_text(size = 10),
                legend.position = "top",
@@ -1902,6 +1891,7 @@
                axis.ticks.x = element_blank(),
                axis.title = element_blank(),
                axis.text = element_text(size = 10))
+      
       # Released DOC ####  
       cumDOC_plot_C323 <- ggplot(data = carbon_cumulative_net_df[carbon_cumulative_net_df$Algae == "C323", ], 
                                  aes(x = Round, y = DOC_cumulative_mean, fill = Treatment))  +
@@ -1927,11 +1917,11 @@
                                      aes(x = Round, y = DOC_net_mean, fill = Treatment))  +
         geom_col(position = position_dodge(0.9), color = "gray15") +
         geom_errorbar(aes(ymin=DOC_net_mean - DOC_net_sd, ymax=DOC_net_mean + DOC_net_sd), width= 0.4, position = position_dodge(0.9)) +
-        labs(y = "Accumulated DOC (mM)", x = " ", title = expression(paste(italic("Navicula"), " sp."))) +
+        labs(y = "Accumulated DOC (mM)", x = " ", title = expression(paste(italic("Navicula"), " sp. SFP"))) +
         scale_fill_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4')) +
         scale_y_continuous(expand = expand_scale(mult = c(0,0)), breaks = seq(0,0.6, by = 0.2)) +
         annotate("text", x = 0.75, y = 0.58, label = expression(paste(bold("A"))), size = 5) + 
-        theme( legend.key = element_rect(fill = NA),  # removes color from behind legned points/lines
+        theme( legend.key = element_rect(fill = NA),  
                legend.title = element_blank(),
                legend.text = element_text(size = 10),
                legend.position = "top",
@@ -1998,18 +1988,18 @@
           geom_point(size = 2.5) +
           geom_line(size = 1) +
           geom_errorbar(aes(ymin=BacteriaConc_mean - BacteriaConc_sd, ymax=BacteriaConc_mean + BacteriaConc_sd), width= 10) +
-          labs(y = bquote('Bacteria'~(10^6~'cells/mL')), x = " ") +
+          labs(y = expression(paste("Bacteria (10"^6, " cells mL"^-1, ")")), x = " ") +
           scale_color_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4'), guide = guide_legend(reverse=TRUE)) +
           scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) + 
           scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260)) +
-          scale_y_continuous(limits = c(0,8), expand = expand_scale(mult = c(0,0.05))) +
-          annotate("text", x = 10, y = 7.8, label = expression(paste(bold("D"))), size = 4.5) + 
+          scale_y_continuous(limits = c(0,8), expand = expand_scale(mult = c(0,0))) +
+          annotate("text", x = 10, y = 7.5, label = expression(paste(bold("D"))), size = 4.5) + 
           theme( legend.position = "none",
-                 axis.title = element_text(margin = margin(r = 15)),  # moves axis title away from axis label
+                 axis.title = element_text(margin = margin(r = 15)),  
                  panel.grid.major = element_line(colour = "gray87", size = 0.2),
                  panel.background = element_rect(fill = NA),
                  axis.line = element_line(color = "black", size = 0.4),
-                 axis.text = element_text(size = 12),
+                 axis.text = element_text(size = 11),
                  axis.ticks = element_blank()) 
         
         # DOC over time in filtrate ####
@@ -2060,7 +2050,7 @@
                    panel.grid.major = element_line(colour = "gray87", size = 0.2),
                    panel.background = element_rect(fill = NA),
                    axis.line = element_line(color = "black", size = 0.4),
-                   axis.text = element_text(size = 12),
+                   axis.text = element_text(size = 11),
                    axis.ticks = element_blank()) 
           
         # DOC over time in filtrate ####
@@ -2074,7 +2064,7 @@
             labs(x = "Medium Reuses", title = expression(paste(italic("Staurosira"), " sp. C323")), y = "DOC (µM)") +
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(expand = expand_scale(mult = c(0,0)), limits = c(0, 0.2), breaks = seq(0,0.2, by = 0.05)) +
-            annotate("text", x = 10, y = 0.19, label = expression(paste(bold("C"))), size = 4.5) + 
+            annotate("text", x = 10, y = 0.185, label = expression(paste(bold("C"))), size = 4.5) + 
             theme( legend.key = element_rect(fill = NA),  
                    legend.title = element_blank(),
                    legend.text = element_text(size = 10),
@@ -2106,12 +2096,12 @@
             scale_y_continuous(limits = c(0,8), breaks = seq(0, 8, by = 2), expand = expand_scale(mult = c(0.05,0))) +
             annotate("text", x = 10, y = 7.5, label = expression(paste(bold("E"))), size = 4.5) + 
             theme( legend.position = "none",
-                   axis.title.x = element_text(margin = margin(r = 15), size = 12),  
+                   axis.title.x = element_text(margin = margin(r = 25), size = 12),  
                    axis.title.y = element_blank(),
                    panel.grid.major = element_line(colour = "gray87", size = 0.2),
                    panel.background = element_rect(fill = NA),
                    axis.line = element_line(color = "black", size = 0.4),
-                   axis.text = element_text(size = 12),
+                   axis.text = element_text(size = 11),
                    axis.ticks = element_blank()) 
           
         # DOC over time in filtrate ####
@@ -2122,7 +2112,7 @@
             geom_errorbar(aes(ymin=(DOC_mean - DOC_sd)/1000, ymax=(DOC_mean + DOC_sd)/1000), width= 10) +
             scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
             scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
-            labs(title = expression(paste(italic("  Navicula"), " sp."))) +
+            labs(title = expression(paste(italic("  Navicula"), " sp. SFP"))) +
             scale_x_continuous(breaks = seq(0, 250, 50), limits = c(-5,260), expand = expand_scale(mult = c(0.05,0))) +
             scale_y_continuous(expand = expand_scale(mult = c(0,0)), limits = c(0, 2.5), breaks = seq(0,2.5, by = 0.5)) +
             annotate("text", x = 10, y = 2.35, label = expression(paste(bold("B"))), size = 4.5) + 
@@ -2179,15 +2169,15 @@
 DOC_biomass_plot <- ggplot(data = initialDOC_PC_final, 
                            aes(x = initial_DOC, y = PC_R_normalized, color = Algae, shape = Algae))  +
   geom_point(alpha = 0.6, size = 3) +
-  labs(x = "Initial DOC (µM) in Reused Medium", y = "Normalized Biomass Yield in Reused Medium") +
-  scale_color_manual(labels = c(expression(paste(italic("Staurosira"), " sp. C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp."))),
+  labs(x = "Initial DOC (µM)", y = "Normalized Biomass Yield") +
+  scale_color_manual(labels = c(expression(paste(italic("Staurosira"), " sp. C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp. SFP"))),
                      values = c('gray43','green4','dodgerblue4')) +
-  scale_shape_manual(labels = c(expression(paste(italic("Staurosira"), " sp. C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp."))), 
+  scale_shape_manual(labels = c(expression(paste(italic("Staurosira"), " sp. C323")), expression(paste(italic("Chlorella"), " sp. D046")), expression(paste(italic("Navicula"), " sp. SFP"))), 
                      values = c(16, 17, 15)) +  
   geom_hline(yintercept = 1, color = "gray55", size = 0.5) +   # reference line for no effect
   xlim(0,1750) +
   scale_y_continuous(breaks = seq(0, 1.5, 0.5), limits = c(0,1.5)) +
-  theme( legend.background = element_rect(fill = "white"),  # removes color from behind legned points/lines
+  theme( legend.background = element_rect(fill = "white"),  
          legend.box.background = element_rect(color = "gray70"),
          legend.key = element_rect(fill = "white"),
          legend.title = element_blank(),
@@ -2199,7 +2189,6 @@ DOC_biomass_plot <- ggplot(data = initialDOC_PC_final,
          axis.title.x = element_text(margin = margin(t = 5), size = 12),  
          panel.background = element_rect(fill = NA),
          panel.grid.major = element_line(colour = "gray87", size = 0.2),
-         panel.grid.minor = element_line(colour = "gray90", size = 0.2),
          panel.border = element_rect(color = "gray60", fil = NA), 
          axis.ticks = element_blank(),
          axis.text = element_text(size = 12)) 
