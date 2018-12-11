@@ -78,28 +78,27 @@
       spread(Treatment, BacteriaConc_mean) %>%  # Converts Fresh and Reused to individual columns, with the values in the columns being the mean bacteria concentration
       mutate(percent_more_bacteria = 100*(R-F)/F) -> bacteria_percent_diff  # calcualtes the % increase in bacteria in Reused treatment compared to Fresh control
 
-        # Find average percent_more_bacteria on Day 5, removing C323 Round 3
-        avg_percent_more_bacteria <- mean(bacteria_percent_diff$percent_more_bacteria[bacteria_percent_diff$Algae != "C323" & bacteria_percent_diff$Round != 3 & bacteria_percent_diff$Day == 5])
-        sd_percent_more_bacteria <- sd(bacteria_percent_diff$percent_more_bacteria[bacteria_percent_diff$Algae != "C323" & bacteria_percent_diff$Round != 3 & bacteria_percent_diff$Day == 5])
+        # Find average percent_more_bacteria on Day 5, removing C323 & Round 3
+        avg_percent_more_bacteria <- mean(bacteria_percent_diff$percent_more_bacteria[ !(bacteria_percent_diff$Algae == "C323" & bacteria_percent_diff$Round == 3) & bacteria_percent_diff$Day == 5])
+        sd_percent_more_bacteria <- sd(bacteria_percent_diff$percent_more_bacteria[ !(bacteria_percent_diff$Algae != "C323" & bacteria_percent_diff$Round != 3) & bacteria_percent_diff$Day == 5])
         
 #### Fill in missing data for multivariate analyses of growth parameters ####
   
   # Create regression equations of missing data with algae cell concentration.   
-  # Missing PC data in Round 4 of "F" treatment in Navicula experiment for Replicates A, B, C. Replace with estimated PC based on algae cell concentration linear regression.
+        
+  # Missing PC data in Round 4 of "F" treatment in Navicula experiment for Replicates A, B, C. 
       PC_vs_cell_Navicula <- lm(uM_PC ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "Navicula", ]) 
-      # R^2 = 0.967, p-val = 2.2e-16; uM_PC = 9113.0*AlgaeConc - 218.8
-  
-  # Missing lipid data. Replace with estimated lipids based on algae cell concentration linear regression with bulk lipid data from Day 5 only.
+
+  # Missing lipid data. Estimated lipids based on algae cell concentration linear regression with algae lipid data from Day 5 only.
     
     # Missing lipid data in Round 2, Day 5, "R" Treatment, Replicate F in Navicula dataset. 
       lipid_vs_cell_Navicula <- lm(AlgaeLipids ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "Navicula" & growth_df2$Day == 5, ]) # only use the Day 5 lipids for regression 
-      # R^2 = 0.404, p-val = 0.00066; AlgaeLipids = 165039*AlgaeConc - 78695
-    
+
     # Missing lipid data in Round 1, Day 5, "F" Treatment, Replicate A of C323 data.
       lipid_vs_cell_C323 <- lm(AlgaeLipids ~ AlgaeConc, data = growth_df2[growth_df2$Algae == 'C323' & growth_df2$Day == 5, ]) # only use the Day 5 lipids for regression 
-      # R^2 = 0.8502, p-val = 1.427e-07; AlgaeLipids = 23395*AlgaeConc + 984
-  
+
   # Use regression to fill in missing PC & lipid values for Navicula  (missing PC values: Treatment F, Day 5, Round 4, all Replicates; missing lipid value: Treatment R, Day 5, Round 2, Replicate F)
+    
     growth_df2$uM_PC[growth_df2$Treatment == "F" & growth_df2$Round == 4 & growth_df2$Day == 5 & growth_df2$Algae == "Navicula"] <- 
           PC_vs_cell_Navicula$coefficients[1] + growth_df2$AlgaeConc[growth_df2$Treatment == "F" & growth_df2$Round == 4 & growth_df2$Day == 5 & growth_df2$Algae == "Navicula"]*PC_vs_cell_Navicula$coefficients[2]
     
@@ -111,6 +110,7 @@
            growth_df2$AlgaeLipids[growth_df2$Treatment == "R" & growth_df2$Round == 2 & growth_df2$Day == 5 & growth_df2$Replicate == "F" & growth_df2$Algae == "Navicula"] / growth_df2$AlgaeConc[growth_df2$Treatment == "R" & growth_df2$Round == 2 & growth_df2$Day == 5 & growth_df2$Replicate == "F" & growth_df2$Algae == "Navicula"]
       
   # Use regression to fill in missing lipid value for C323 (missing lipid value: Round 1, Day 5, Treatment F, Replicate A)
+    
     growth_df2$AlgaeLipids[growth_df2$Algae == 'C323' & growth_df2$Treatment == "F" & growth_df2$Round == 1 & growth_df2$Day == 5 & growth_df2$Replicate == "A"] <- 
           lipid_vs_cell_C323$coefficients[1] + growth_df2$AlgaeConc[growth_df2$Algae == 'C323' & growth_df2$Treatment == "F" & growth_df2$Round == 1 & growth_df2$Day == 5 & growth_df2$Replicate == "A"]*lipid_vs_cell_C323$coefficients[2]
   
@@ -121,34 +121,30 @@
     
   # Check regression of OD vs algae cell concentrations to compare with other experiments
     OD_vs_cell_Navicula <- lm(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "Navicula", ])  
-    # R^2 = 0.9743, biomass OD = 0.130640*AlgaeConc - 0.001821
-    
     OD_vs_cell_C323 <- lm(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == 'C323', ])  
-    # R^2 = 0.9542, biomass OD = 0.046608*AlgaeConc + 0.002648
-    
     OD_vs_cell_D046 <- lm(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == 'D046', ])  
-    # R^2 = 0.9469, biomass OD = 0.016297*AlgaeConc + 0.001099
-    
-    # Plots
-    plot(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "Navicula", ], 
-         xlab = "Algae Concentration (million cells/mL)", ylab = "OD 750", main = "Navicula sp.")
-        abline(lm(growth_df2$biomass_OD[growth_df2$Algae == "Navicula"] ~ growth_df2$AlgaeConc[growth_df2$Algae == "Navicula"]))
-    
-   plot(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "D046", ], 
-             xlab = "Algae Concentration (million cells/mL)", ylab = "OD 750", main = "Chlorella sp. D046")
-        abline(lm(growth_df2$biomass_OD[growth_df2$Algae == "D046"] ~ growth_df2$AlgaeConc[growth_df2$Algae == "D046"]))
-        
-   plot(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "C323", ], 
-             xlab = "Algae Concentration (million cells/mL)", ylab = "OD 750", main = "Staurosira sp. C323")
-        abline(lm(growth_df2$biomass_OD[growth_df2$Algae == "C323"] ~ growth_df2$AlgaeConc[growth_df2$Algae == "C323"]))
-        
-  
-#### Calculate variables for algae growth statistics ####
 
+    # Plots of OD versus algae concentration
+     #  plot(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "Navicula", ], 
+     #       xlab = "Algae Concentration (million cells/mL)", ylab = "OD 750", main = "Navicula sp.")
+     #      abline(lm(growth_df2$biomass_OD[growth_df2$Algae == "Navicula"] ~ growth_df2$AlgaeConc[growth_df2$Algae == "Navicula"]))
+     #  
+     # plot(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "D046", ], 
+     #           xlab = "Algae Concentration (million cells/mL)", ylab = "OD 750", main = "Chlorella sp. D046")
+     #      abline(lm(growth_df2$biomass_OD[growth_df2$Algae == "D046"] ~ growth_df2$AlgaeConc[growth_df2$Algae == "D046"]))
+     #      
+     # plot(biomass_OD ~ AlgaeConc, data = growth_df2[growth_df2$Algae == "C323", ], 
+     #           xlab = "Algae Concentration (million cells/mL)", ylab = "OD 750", main = "Staurosira sp. C323")
+     #      abline(lm(growth_df2$biomass_OD[growth_df2$Algae == "C323"] ~ growth_df2$AlgaeConc[growth_df2$Algae == "C323"]))
+  
+
+#### Calculate variables for algae parameter statistics ####
+
+  # Define time variables 
     day_start <- 0          # day_start = Starting day of each round
     day_end <- 5            # day_end = Last day of each round
     mu_period_D046 <- 0:2   # mu_period_D046 = Days when Chlorella sp. D046 was in exponential pahse, to use for calculating specific growth rate
-    mu_period_diatom <- 0:3 # mu_period_diatom = Days when C323 and Navicula sp. were in exponential phase, to use for calculating specific growth rate
+    mu_period_diatom <- 0:3 # mu_period_diatom = Days when Staurosira sp. C323 and Navicula sp. SFP were in exponential phase, to use for calculating specific growth rate
   
   # Specific growth rate 
     growth_df2 %>%
@@ -173,89 +169,86 @@
       select(-Replicate) %>% # Remove 'Replicate' column
       filter(Round != 0) %>% # Remove Round 0, when all treatments were in Fresh Medium
       group_by(Algae, Round, Treatment) %>%
-      summarize_all(funs(mean, sd), na.rm = TRUE) -> MultivarGrowthData_Summary # Take average and standard deviation of the different Reuse + Treatment combinations, save the table
+      summarize_all(funs(mean, sd), na.rm = TRUE) -> MultivarGrowthData_Summary # Take average and standard deviation of the different Reuse + Treatment combinations
 
+#### Compare cumulative (i.e., gross, or released) DOC and net (i.e., accumulated) DOC, and DOC consumed by bacteria ####
   
-#### Compare cumulative and net DOC produced, and DOC consumed by bacteria ####
+  ### Estimate production rates for missing days (Day 1 & 3) based on rates measured on following and previous days
   
-  # Estimate production rates for missing days (Day 1 & 3) based on rates measured on following and previous days
-  
-  # Make function to calculate missing data
-    missing_fun <- function(x){
-      x <- ifelse( is.na(x) == TRUE, (lead(x, 1) + lag(x, 1))/2, x) # take average of value before and after the missing value
-      return(x)
-    }
-  
-  # Use function to replace missing values & calculate additional DOC fractions
-  growth_df2 %>%
-    filter(Round != 0 & Algae != "D046") %>%   # do not include Round 0; do not include Chlorella sp. D046 because there is no absolute rate data available
-    select(Algae, Round, Treatment, Replicate, Day, DaysElapsed, TOC_rate, POC_rate, DOC_rate) %>%
-    group_by(Algae, Round, Treatment, Replicate) %>%  
-    do(mutate_at(., vars(ends_with("rate")), funs(missing_fun)) ) %>% # Apply the function to replace NA values
-    mutate(fraction_DOC_rate = DOC_rate/TOC_rate) -> carbon_rate_df  # Re-calculate fraction_DOC_rate for all days, now that missing data has been replaced
-  
-  ### Use rates to estimate cumulative production over a round.
-  
-  # Light hours per photoperiod (with photoperiod being 12 hours) (carbon production rates are already in units of days, with 12 hrs light/day as defined by the experiment protocol)
-  light_time <- 12/12      # light_time = light hours per hours of photoperiod (unitless). We assume carbon production is negligible in the dark, so rates are only applicable during the photoperiod
-  day0_light_time <- 7/12  # day0_light_time = hours of light (12:00 to 19:00) the cultures experienced on Day 0 after sampling
-  day5_light_time <- 5/12  # day5_light_time = hours of light (7:00 to 12:00) the cultures experienced on Day 5 until the end of sampling
-  light_per_round <- c(day0_light_time, rep(light_time, 4), day5_light_time) # light_per_round = vector of light hours experienced by the culture from Days 0 through 5, respectively
-  
-  carbon_rate_df %>%
-    select(-fraction_DOC_rate) %>% 
-    group_by(Algae, Round, Treatment, Replicate) %>%
-    do(summarize_at(., vars(ends_with("rate")), funs(sum(.*light_per_round/1000)))) %>%         # Multiply the carbon production rates by the light_per_round vector. Divide by 1000 to convert to mM
-    rename(TOC_cumulative = TOC_rate, POC_cumulative = POC_rate, DOC_cumulative = DOC_rate) %>% # Rename the multiplication products (which still have "_rate" suffixes, as "_cumulative" suffixes to indicate cumulative carbon produced over the round)
-    mutate(fraction_DOC_cumulative = DOC_cumulative/TOC_cumulative) -> carbon_cumulative_df     # fraction_DOC_cumulative = cumulative DOC released over the round as a fraction of cumulative carbon produced over the round
-  
-  # Calculate change in measured (net) PC (GF/F filter, 0.8 µm) and DOC (0.2 µm) over growth period and add to carbon_cumulative_df, then calculate means and st devs
-  
-  growth_df2 %>% 
-    filter(Round != 0) %>%   # do not include Round 0
-    group_by(Algae, Round, Treatment, Replicate) %>% 
-    summarize(PC_net = ( (uM_PC[Day == day_end] - uM_PC[Day == day_start])/1000 ),    # Same as PC_net in MultivarGrowthData; convert to mM
-              DOC_net = (DOC[Day == day_end] - DOC[Day == day_start])/1000 ) %>%      # DOC_net = change in DOC concentration over the round; convert to mM
-    mutate(fraction_DOC_net = DOC_net/(PC_net + DOC_net)) %>%                         # fraction_DOC_net = DOC_net as a fraction of change in total carbon over the round (with total carbon calcualted as the sum of net_PC and net_DOC)                         
-    full_join(carbon_cumulative_df, by = c("Algae", "Round", "Treatment", "Replicate")) -> carbon_cum_net_reps_df   # data with individual replicates still intact
+    # Make function to calculate missing data
+      missing_fun <- function(x){
+        x <- ifelse( is.na(x) == TRUE, (lead(x, 1) + lag(x, 1))/2, x) # take average of value before and after the missing value
+        return(x)
+      }
     
-  carbon_cum_net_reps_df %>%   
-    filter(!is.na(DOC_net)) %>%      # For Chlorella sp. D046, RB R3 D5 measured DOC is missing, so remove NAs before calculating means 
-    mutate(DOC_percent_lost = 100*(DOC_cumulative - DOC_net)/DOC_cumulative) %>%   # DOC_percent_lost = percent of released (cumulative) DOC missing per round after accounting for DOC measured (net) in the growth medium
-    group_by(Algae, Round, Treatment) %>% 
-    select(-Replicate) %>% # Remove 'Replicate' column
-    summarize_all(funs(mean, sd)) -> carbon_cumulative_net_df  # Means and standard deviations summary table for both estimated (cumulative) and measured (net) carbon production
+    # Use function to replace missing values & calculate additional DOC fractions
+    growth_df2 %>%
+      filter(Round != 0 & Algae != "D046") %>%   # do not include Round 0; do not include Chlorella sp. D046 because there is no absolute rate data available
+      select(Algae, Round, Treatment, Replicate, Day, DaysElapsed, TOC_rate, POC_rate, DOC_rate) %>%
+      group_by(Algae, Round, Treatment, Replicate) %>%  
+      do(mutate_at(., vars(ends_with("rate")), funs(missing_fun)) ) %>% # Apply the function to replace NA values
+      mutate(fraction_DOC_rate = DOC_rate/TOC_rate) -> carbon_rate_df  # Re-calculate fraction_DOC_rate for all days, now that missing data have been replaced
+    
+  ### Use rates to estimate cumulative (i.e., gross) DOC released over a round.
+  
+    # Light time per photoperiod (with photoperiod being a maximum of 12 hours) (carbon production rates are already in units of days, with 12 hrs light/day as defined by the experiment protocol; assumed negligible TOC production and DOC release in the dark)
+    light_time <- 12/12      # light_time = light hours per hours of photoperiod (unitless). We assume carbon production is negligible in the dark, so rates are only applicable during the photoperiod
+    day0_light_time <- 7/12  # day0_light_time = hours of light (12:00 to 19:00) the cultures experienced on Day 0 after sampling
+    day5_light_time <- 5/12  # day5_light_time = hours of light (7:00 to 12:00) the cultures experienced on Day 5 until the end of sampling
+    light_per_round <- c(day0_light_time, rep(light_time, 4), day5_light_time) # light_per_round = vector of light hours experienced by the culture from Days 0 through 5, respectively
+    
+    carbon_rate_df %>%
+      select(-fraction_DOC_rate) %>% 
+      group_by(Algae, Round, Treatment, Replicate) %>%
+      do(summarize_at(., vars(ends_with("rate")), funs(sum(.*light_per_round/1000)))) %>%         # Multiply the carbon production rates by the light_per_round vector. Divide by 1000 to convert to mM C.
+      rename(TOC_cumulative = TOC_rate, POC_cumulative = POC_rate, DOC_cumulative = DOC_rate) %>% # Rename the multiplication products (which still have "_rate" suffixes, as "_cumulative" suffixes to indicate cumulative (i.e., gross) carbon produced over the round)
+      mutate(fraction_DOC_cumulative = DOC_cumulative/TOC_cumulative) -> carbon_cumulative_df     # fraction_DOC_cumulative = cumulative (i.e., gross) DOC released over the round as a fraction of cumulative TOC produced over the round
+  
+  ### Calculate net (i.e., accumulated) PC (GF/F filter, 0.8 µm) and DOC (0.2 µm) over growth period and add to carbon_cumulative_df, then calculate means and st devs
+  
+    growth_df2 %>% 
+      filter(Round != 0) %>%   # do not include Round 0
+      group_by(Algae, Round, Treatment, Replicate) %>% 
+      summarize(PC_net = ( (uM_PC[Day == day_end] - uM_PC[Day == day_start])/1000 ),    # Same as PC_net in MultivarGrowthData; convert to mM
+                DOC_net = (DOC[Day == day_end] - DOC[Day == day_start])/1000 ) %>%      # DOC_net = change in DOC concentration over the round; convert to mM
+      mutate(fraction_DOC_net = DOC_net/(PC_net + DOC_net)) %>%                         # fraction_DOC_net = DOC_net as a fraction of change in total carbon over the round (with total carbon calculated as the sum of net_PC and net_DOC; note: this is missing carbon in the size fraction of 0.2 µm to 0.8 µm)                         
+      full_join(carbon_cumulative_df, by = c("Algae", "Round", "Treatment", "Replicate")) -> carbon_cum_net_reps_df   # data with individual replicates still intact
+      
+    carbon_cum_net_reps_df %>%   
+      filter(!is.na(DOC_net)) %>%      # For Chlorella sp. D046, RB R3 D5 measured DOC is missing, so remove NAs before calculating means 
+      mutate(DOC_percent_lost = 100*(DOC_cumulative - DOC_net)/DOC_cumulative) %>%   # DOC_percent_lost = percent of released (cumulative) DOC missing per round after accounting for DOC measured (net) in the growth medium
+      group_by(Algae, Round, Treatment) %>% 
+      select(-Replicate) %>% # Remove 'Replicate' column
+      summarize_all(funs(mean, sd)) -> carbon_cumulative_net_df  # Means and standard deviations summary table for both estimated (cumulative, gross) and measured (net) carbon production
     
   ### Estiamte carbon consumed by bacteria and add it to the carbon_cumulative_net_df data frame
   
-  # Define bacteria growth efficiency and bacteria carbon content 
-  bge <- 0.15 # bge = bacteria growth efficiency, unitless; fraction of carbon consumed that becomes biomass
-  C_content <- 1*10^-13 # C_content = bacteria carbon content in grams C/bacteria cell
-   
-  growth_df2 %>%
-    filter(Round != 0) %>%   # do not include Round 0
-    select(Algae, Round, Treatment, Replicate, Day, BacteriaConc) %>%
-    group_by(Algae, Round, Treatment, Replicate) %>%
-    summarize(BacteriaConc_change = (BacteriaConc[Day == day_end] - BacteriaConc[Day == day_start]) *10^9 ) %>%  # BacteriaConc_change = change in bacteria concentration from Day 0 to Day 5. Convert from 10^6 cells/mL to cells/Liter.
-    mutate(bact_C_consumed = (BacteriaConc_change*C_content/bge)* 1000/C_mol_wt) -> bact_C_consumed_df # bact_C_consumed = carbon consumed by bacteria over a round. Multiply bacteria concentration change by C content, and divide by growth efficiency. Convert to mM C.
-  
-  # Join the bacteria_C_consumed data frame to the measured (net) & estimated (cumulative) carbon data frame
+    # Define bacteria growth efficiency and bacteria carbon content 
+    bge <- 0.15 # bge = bacteria growth efficiency, unitless; fraction of carbon consumed that becomes biomass
+    C_content <- 1*10^-13 # C_content = bacteria carbon content in grams C/bacteria cell
+     
+    growth_df2 %>%
+      filter(Round != 0) %>%   # do not include Round 0 when both the control and treatment used Fresh medium
+      select(Algae, Round, Treatment, Replicate, Day, BacteriaConc) %>%
+      group_by(Algae, Round, Treatment, Replicate) %>%
+      summarize(BacteriaConc_change = (BacteriaConc[Day == day_end] - BacteriaConc[Day == day_start]) *10^9 ) %>%  # BacteriaConc_change = change in bacteria concentration from Day 0 to Day 5. Convert from 10^6 cells/mL to cells/Liter.
+      mutate(bact_C_consumed = (BacteriaConc_change*C_content/bge)* 1000/C_mol_wt) -> bact_C_consumed_df # bact_C_consumed = carbon consumed by bacteria over a round. Multiply bacteria concentration change by C content, and divide by growth efficiency. Convert to mM C.
     
-  bact_C_consumed_df %>%    
-    select(-BacteriaConc_change) %>%              
-    full_join(carbon_cum_net_reps_df, by = c("Algae", "Round", "Treatment", "Replicate")) %>% 
-    mutate(fraction_C_bact_consumed = bact_C_consumed/(DOC_cumulative - DOC_net)) %>%  # fraction_C_bact_consumed = fraction of the difference between cumulative and net DOC that the bacteria C consumption accounts for
-    select(-Replicate) %>% 
-    summarize_all(funs(mean, sd)) -> carbon_all_df  # Means and standard deviations for replicates
+    # Join the bacteria_C_consumed data frame to the measured (i.e., net/accumulated) & estimated (i.e., cumulative/gross) carbon data frame
+    bact_C_consumed_df %>%    
+      select(-BacteriaConc_change) %>%              
+      full_join(carbon_cum_net_reps_df, by = c("Algae", "Round", "Treatment", "Replicate")) %>% 
+      mutate(fraction_C_bact_consumed = bact_C_consumed/(DOC_cumulative - DOC_net)) %>%  # fraction_C_bact_consumed = fraction of the difference between cumulative (gross) and net (accumulated) DOC that  bacteria C consumption accounts for
+      select(-Replicate) %>% 
+      summarize_all(funs(mean, sd)) -> carbon_all_df  # Means and standard deviations for replicates
 
-
-#### Comparison of normalized biomass yield vs initial DOC in the reused medium treatments ####
+#### Comparison of normalized biomass yield vs initial DOC in reused medium treatments ####
 
   growth_df2 %>% 
     group_by(Algae, Round, Treatment, Replicate) %>% 
     summarize(initial_DOC = DOC[Day == day_start]) %>%  # initial_DOC = biologically-derived DOC concentration on Day 0 of each round, units: µM
-    inner_join(MultivarGrowthData, by = c("Algae", "Round", "Treatment", "Replicate")) %>% 
-    select(-mu, -FvFm_final, -AlgaeLipidsPerCell_final) -> initialDOC_PC_df
+    inner_join(MultivarGrowthData, by = c("Algae", "Round", "Treatment", "Replicate")) %>% # Add data from the MultivarGrowthData data frame
+    select(-mu, -FvFm_final, -AlgaeLipidsPerCell_final) -> initialDOC_PC_df  # Exclude algae parameters except for biomass yield PC
    
   # Find the mean change in biomass for fresh medium (control) replicates within each round of the experiment
     initialDOC_PC_df %>% 
@@ -263,13 +256,10 @@
       filter(Treatment == "F") %>% 
       summarize(mean_Fresh_PCnet = mean(PC_net)) -> initialDOC_PC_Fresh_df  #mean_Fresh_PCnet = average PC_net of Fresh medium replicates within a round
   
-    # Add the mean PC_net of Fresh replicates as a column in the original initialDOC_PC_df data frame, 
-      # and calculate normalized biomass by dividing each reused medium replicate PC_net 
-      # by mean_Fresh_PCnet. Only retain rows of the reused medium treatments. 
-     
+      # Calculate normalized biomass by dividing each reused medium replicate PC_net by mean_Fresh_PCnet. 
       initialDOC_PC_df %>% 
-        filter(Treatment == "R") %>% 
-        inner_join(initialDOC_PC_Fresh_df, by = c("Algae", "Round")) %>% 
+        filter(Treatment == "R") %>% # Only retain the reused medium treatments
+        inner_join(initialDOC_PC_Fresh_df, by = c("Algae", "Round")) %>% # Add the mean PC_net of Fresh replicates as a column in the original initialDOC_PC_df data frame
         ungroup() %>% 
         select(-Treatment.x, -Treatment.y) %>% 
         mutate(PC_R_normalized = PC_net/mean_Fresh_PCnet)-> initialDOC_PC_final  #PC_R_normalized = PC_net of Reused medium treatments divided by the mean PC_net of Fresh medium control replicates from the same round
@@ -279,7 +269,7 @@
         plot(PC_R_normalized ~ initial_DOC, data = initialDOC_PC_final)
         abline(lm(initialDOC_PC_final$PC_R_normalized ~ initialDOC_PC_final$initial_DOC))
 
-        # Remove outliers (the 2nd and 3rd Round for Algae C323), which heavily influence the trendline
+        # Remove outliers (the 2nd and 3rd Round for Staurosira sp. C323), which heavily influence the trendline
           initialDOC_PC_final%>% 
             filter(! (Algae == "C323" & Round > 1)) -> initialDOC_PC_no_outliers
         
@@ -295,7 +285,6 @@
     summarize_all(funs(mean, sd)) -> filtrate_df_avgs
   
   # Calculate C consumed by bacteria in the filtrate
-  
     filtrate_df %>% 
       select(-Date, -DOC, -TDN) %>% 
       group_by(Algae, Treatment, Replicate) %>% 
@@ -305,34 +294,12 @@
       group_by(Algae, Treatment) %>% 
       summarize_all(funs(mean, sd)) -> filtrate_C_consumed_df
 
-
 ##### Statistics #####
 
-#### 1. Do growth-related variables differ in fresh versus reused medium across multiple medium reuses? ####
+#### 1. Do algae parameters differ in fresh versus reused medium across multiple medium reuses? ####
 
-    # # Use MANOVA to determine differences between treatments with 4 dependent variables across rounds 1-4
-    # 
-    # # Check for colinearity of response variables
-    # pairs(MultivarGrowthData[,5:8])
-    # cor(MultivarGrowthData[MultivarGrowthData$Round != 0,5:8]) # Pearson's 
-    # 
-    # # MANOVA with error term for Replicate to account for dependency of reused medium replicate bottles across rounds
-    # 
-    # manova.mod.D046 <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
-    #                           data = MultivarGrowthData[MultivarGrowthData$Algae == "D046" & MultivarGrowthData$Round != 0, ]) 
-    # 
-    # manova.mod.C323 <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
-    #                           data = MultivarGrowthData[MultivarGrowthData$Algae == "C323" & MultivarGrowthData$Round != 0, ]) 
-    # 
-    # manova.mod.Navi <- manova(cbind(AlgaeLipidsPerCell_final, PC_net, FvFm_final, mu) ~ Treatment*Round + Error(Replicate), 
-    #                           data = MultivarGrowthData[MultivarGrowthData$Algae == "Navicula" & MultivarGrowthData$Round != 0, ]) 
-    # 
-    # # Check significance of model terms
-    # summary(manova.mod.D046)
-    # summary(manova.mod.C323)
-    # summary(manova.mod.Navi)
-
-  # UPDATED METHOD - ANALYZE EACH VARIABLE SEPARATELY WITH NLME MODEL AS DONE IN QUESTION 2 #
+    # Predictor variables are the experimental treatment (fresh versus reused medium) and round of the experiment (excluding the first round in which both the control and treatment used fresh medium). 
+    # Random effects are the replicate bottles, and an autocorrelation structure of corAR1 is used with round as the time variable and replicate bottles as the subjects, to account for dependency of reused media across rounds (although fresh medium controls were independent across rounds). 
     
     # C323
     # 1. Biomass yield
@@ -434,7 +401,8 @@
     summary(FvFm.lme.D046)
     
     
-    # Check significance of model terms
+    # Check significance of model terms: 
+    # Type II Wald test to determine significance of the predictor variables using the Anova function in the car package (Fox and Weisberg, 2011; Mangiafico, 2016).
     PC_net.lme.C323.Anova <- Anova(PC_net.lme.C323)
     PC_net.lme.Navi.Anova <- Anova(PC_net.lme.Navi)
     PC_net.lme.D046.Anova <- Anova(PC_net.lme.D046)
@@ -457,7 +425,7 @@
 #### 2.	Is DOC production rate in reused medium different from that in fresh medium? Does DOC production rate change across multiple reuses of the medium? ####
 
     # Use the variable fraction_DOC_cumulative since this normalizes DOC release rate by TOC production rate over the round
-    # Keep Round as an integer variable using lme with Replicate bottles as a random factor
+    # Keep Round as an integer variable using lme with Replicate bottles as a random factor (same structure as in Question 1 above)
       
       # C323
       DOC.lme.C323 <- lme(fraction_DOC_cumulative ~ Treatment*Round, 
@@ -477,6 +445,7 @@
       
       
       # Check significance of model terms
+      # Type II Wald test to determine significance of the predictor variables using the Anova function in the car package (Fox and Weisberg, 2011; Mangiafico, 2016).
       DOC.lme.C323.Anova <- Anova(DOC.lme.C323)
       DOC.lme.Navi.Anova <- Anova(DOC.lme.Navicula)
       
