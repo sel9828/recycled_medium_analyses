@@ -22,6 +22,7 @@
   # Plotting
     library(gtable)
     library(grid)
+    library(ggpubr)
 
 #### Read Data (see metadata for CSV file column descriptions) ####
 
@@ -1186,10 +1187,8 @@
       geom_point(size = 3) +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=(DIC_mean - DIC_sd)/1000, ymax=(DIC_mean + DIC_sd)/1000), width= 0.4) +
-      labs(x = "Days", y = "DIC (mM)") +
       geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
       geom_errorbar(aes(ymin=DIC_mean - DIC_sd, ymax=DIC_mean + DIC_sd), width= 0.4) +
-      labs(y = "DIC (mM)") +
       scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
@@ -1199,8 +1198,7 @@
              legend.text = element_text(size = 10),
              legend.title = element_blank(),
              legend.position = c(0.93,0.8),
-             axis.title.y = element_text(margin = margin(r = 15), size = 14),  
-             axis.title.x = element_blank(),
+             axis.title = element_blank(),  
              panel.background = element_rect(fill = "white"),
              panel.grid.major = element_line(colour = "gray87", size = 0.2),
              panel.border = element_rect(color = "gray60", fil = NA),
@@ -1210,20 +1208,16 @@
     
   # Combine DIC plots in a grid ####
     
-    # Convert ggplots to grobs
-    C323_DIC_grob <- ggplotGrob(C323_DIC_plot)
-    Navi_DIC_grob <- ggplotGrob(Navi_DIC_plot)
-    
-    # Combine in grid
-    DIC_gridplot <- rbind(Navi_DIC_grob, C323_DIC_grob, size = "first")
+    DIC_gridplot <- ggarrange(Navi_DIC_plot, C323_DIC_plot, nrow = 2, align = "v")
+    DIC_gridplot_title <- annotate_figure(DIC_gridplot, left = text_grob("DIC (mM)", size = 14, rot = 90))
     
     grid.newpage()
-    grid.draw(DIC_gridplot)
+    grid.draw(DIC_gridplot_title)
     
     # Save plot as pdf file
     pdf("Figures/FigS4_DICGrid.pdf", 
         width = 9, height = 4)
-    grid.draw(DIC_gridplot)
+    grid.draw(DIC_gridplot_title)
     dev.off() 
   
 #### Figure S5: Salinity ####
@@ -1698,7 +1692,6 @@
         geom_point(size = 3) +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         geom_errorbar(aes(ymin=(DOC_rate_mean - DOC_rate_sd)/1000, ymax=(DOC_rate_mean + DOC_rate_sd)/1000), width= 0.4) +
-        labs(y = expression(paste("DOC Release Rate (mM ", "day"^-1, ")"))) +
         geom_line(aes(group = interaction(Treatment, Round)), size = 1) +
         scale_color_manual(labels = c("Fresh", "Reused"), values = c('dodgerblue2', 'dodgerblue4'), guide = guide_legend(reverse=TRUE)) +
         scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
@@ -1709,8 +1702,7 @@
                legend.text = element_text(size = 10),
                legend.title = element_blank(),
                legend.position = c(0.93,0.7),
-               axis.title.y = element_text(margin = margin(r = 15), size = 9), # adjust title size and position manually after saving
-               axis.title.x = element_blank(),
+               axis.title = element_blank(),
                panel.background = element_rect(fill = "white"),
                panel.grid.major = element_line(colour = "gray87", size = 0.2),
                panel.border = element_rect(color = "gray60", fil = NA),
@@ -1720,20 +1712,16 @@
       
       # Combine DOC rate plots in a grid ####
       
-      # Convert ggplots to grobs
-      C323_DOCrate_grob <- ggplotGrob(C323_DOCrate_plot)
-      Navi_DOCrate_grob <- ggplotGrob(Navi_DOCrate_plot)
-      
-      # Combine in grid
-      DOCrate_gridplot <- rbind(Navi_DOCrate_grob, C323_DOCrate_grob, size = "first")
+      DOCrate_gridplot <- ggarrange(Navi_DOCrate_plot, C323_DOCrate_plot, nrow = 2, align = "v")
+      DOCrate_gridplot_title <- annotate_figure(DOCrate_gridplot, left = text_grob(expression(paste("DOC Release Rate (mM ", "day"^-1, ")")), rot = 90, size = 14))
       
       grid.newpage()
-      grid.draw(DOCrate_gridplot)
+      grid.draw(DOCrate_gridplot_title)
       
       # Save plot as pdf file
       pdf("Figures/FigS7_DOCrateGrid.pdf", 
           width = 9, height = 4)
-      grid.draw(DOCrate_gridplot)
+      grid.draw(DOCrate_gridplot_title)
       dev.off() 
      
 #### Figure S8: DOC rate (% of TOC) over time ####
