@@ -2148,7 +2148,7 @@
           
           # Save plot as pdf
           pdf("Figures/Fig5_saved_filtrate.pdf", 
-              width = 8, height = 4.5)
+              width = 7.85, height = 4.5)
           grid.draw(saved_filtrate_plot)
           dev.off() 
 
