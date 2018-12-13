@@ -512,7 +512,7 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 2), expand = expand_scale(mult = c(0.05,0.1))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 2.6, y = 4.4, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+      annotate("text", x = 2.8, y = 4.4, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 4) + 
       theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
@@ -537,8 +537,8 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 10, 2), expand = expand_scale(mult = c(0.05,0.15))) +  
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 30, 5)) +
-      annotate("text", x = 2.3, y = 9, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 5) + 
-      annotate("text", x = c(9, 15, 21, 27), y = 9, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
+      annotate("text", x = 2.5, y = 9, label = expression(paste(bold("A"), italic("  Chlorella"), " sp. D046")), size = 4) + 
+      annotate("text", x = c(9, 15, 21, 27), y = 9, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 4) +
       theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
@@ -563,7 +563,7 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +
       scale_y_continuous(breaks = seq(0, 1.2, 0.4), expand = expand_scale(mult = c(0.05,0.12))) +  # Change scale depending on values
       scale_x_continuous(limits = c(-0.2,30), breaks = seq(0, 32, 5)) +
-      annotate("text", x = 2.1, y = 1.05, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+      annotate("text", x = 2.3, y = 1.05, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 4) + 
       theme( legend.key = element_rect(fill = NA),  
              legend.title = element_blank(),
              legend.text = element_text(size = 9),
@@ -592,7 +592,7 @@
     
     # Save plot as pdf file
     pdf("Figures/Fig1_AlgaeConcGrid.pdf", 
-        width = 9.5, height = 5.5)
+        width = 7.85, height = 5.3)
     grid.draw(algaeConc_gridplot)
     dev.off()
     
