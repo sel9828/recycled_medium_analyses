@@ -592,7 +592,7 @@
     
     # Save plot as pdf file
     pdf("Figures/Fig1_AlgaeConcGrid.pdf", 
-        width = 7.85, height = 5.3)
+        width = 7.85, height = 5.5)
     grid.draw(algaeConc_gridplot)
     dev.off()
     
@@ -1425,9 +1425,9 @@
     scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(limits = c(0, 0.32), breaks = seq(0,0.3, 0.1), expand = expand_scale(mult = c(0.05,0.2))) +
-    annotate("text", x = 2.6, y = 0.31, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 5) + 
+    annotate("text", x = 2.8, y = 0.32, label = expression(paste(bold("C"), italic("  Staurosira"), " sp. C323")), size = 4) + 
     theme( legend.key = element_rect(fill = NA),  
-           legend.text = element_text(size = 10),
+           legend.text = element_text(size = 9),
            legend.title = element_blank(),
            legend.position = c(0.07,0.55),
            axis.title.y = element_blank(),
@@ -1449,10 +1449,10 @@
       scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
       scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
       scale_y_continuous(breaks = seq(0, 0.7, 0.2), expand = expand_scale(mult = c(0.05,0.2))) +
-      annotate("text", x = 2.4, y = 0.69, label = expression(paste( bold("A"), italic(" Chlorella"), " sp. D046")), size = 5) + 
-      annotate("text", x = c(9, 15, 21, 27), y = 0.69, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 5) +
+      annotate("text", x = 2.6, y = 0.69, label = expression(paste( bold("A"), italic(" Chlorella"), " sp. D046")), size = 4) + 
+      annotate("text", x = c(9, 15, 21, 27), y = 0.69, label = c("1st reuse", "2nd reuse", "3rd reuse", "4th reuse"), color = "gray40", size = 4) +
       theme( legend.key = element_rect(fill = NA),  
-             legend.text = element_text(size = 10),
+             legend.text = element_text(size = 9),
              legend.title = element_blank(),
              legend.position = c(0.07,0.55),
              axis.title.y = element_text(margin = margin(r = 15), size = 14),  
@@ -1475,9 +1475,9 @@
     scale_shape_manual(labels = c("Fresh", "Reused"), values = c(16, 15), guide = guide_legend(reverse=TRUE)) +  
     scale_x_continuous(limits = c(-0.2,30),breaks = seq(0, 30, 5)) +
     scale_y_continuous(breaks = seq(0, 2.2, 0.5), expand = expand_scale(mult = c(0.05,0.2))) +
-    annotate("text", x = 2.1, y = 2.1, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 5) + 
+    annotate("text", x = 2.3, y = 2.2, label = expression(paste( bold("B"), italic("  Navicula"), " sp. SFP")), size = 4) + 
     theme( legend.key = element_rect(fill = NA),  
-           legend.text = element_text(size = 10),
+           legend.text = element_text(size = 9),
            legend.title = element_blank(),
            legend.position = c(0.07,0.55),
            axis.title.y = element_text(margin = margin(r = 15), size = 14),  
@@ -1504,7 +1504,7 @@
     
     # Save plot as pdf file
     pdf("Figures/Fig3_DOCmeasGrid.pdf", 
-        width = 9.5, height = 6.5)
+        width = 7.85, height = 5.5)
     grid.draw(DOCmeas_gridplot)
     dev.off()
 
