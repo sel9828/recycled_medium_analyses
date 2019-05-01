@@ -898,7 +898,7 @@
                                aes(x = Round, y = AlgaeLipidsPerCell_final_mean/10^6, fill = Treatment))  +
       geom_col(position = position_dodge(0.9), color = "gray15") +
       geom_errorbar(aes(ymin=(AlgaeLipidsPerCell_final_mean - AlgaeLipidsPerCell_final_sd)/10^6, ymax=(AlgaeLipidsPerCell_final_mean + AlgaeLipidsPerCell_final_sd)/10^6), width= 0.4, position = position_dodge(0.9)) +
-      labs(y = expression(paste("Lipid Content (RFU cell"^-1, " mL"^-1, ")"))) +
+      labs(y = expression(paste("Lipid Content (RFU/(cells/mL))"))) +
       scale_y_continuous(expand = expand_scale(mult = c(0, 0.1)), breaks = seq(0, 0.01, by = 0.004)) +
       scale_fill_manual(labels = c("Fresh", "Reused"), values = c('green3', 'green4')) +   
       annotate("text", x = 0.75, y = 0.0095, label = expression(paste(bold("G"))), size = 4) + 
